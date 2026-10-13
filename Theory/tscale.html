@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../responsive.css" />
+  <title>Democritus: Temperature Scaling</title>
+</head>
+<body background="../Textures/iepback.gif">
+
+  <center>
+    <h1 class="brand">DEMOCRITUS</h1>
+  </center>
+
+  <div class="content-wrap">
+    <center>
+      <h2 class="theory-title"><img src="../Icons/GreStar.gif" height="15" alt="*">Temperature Scaling<img src="../Icons/GreStar.gif" height="15" alt="*"></h2>
+    </center>
+
+    <p>
+      Temperature scaling is one of the "tricks of the trade" employed in molecular dynamics to drive a simulation towards the desired system temperature.
+    </p>
+
+    <p>
+      It is well known in physics that the system temperature and the system average kinetic energy are essentially the same. The connection between the two is given by the following equation:
+    </p>
+
+    <center>
+      <p style="font-size: 1.15rem; font-weight: bold; text-align: center; margin: 1.2rem 0;">
+        K = d k T / 2
+      </p>
+    </center>
+
+    <p>
+      In which: <strong>K</strong> is the <strong>average</strong> kinetic energy per atom; <strong>d</strong> is the system dimension (i.e. <strong>d=3</strong> for a 3-dimensional system, <strong>d=2</strong> for the two-dimensional <strong>Democritus</strong> model); <strong>k</strong> is a conversion factor known as <strong>Boltzmann's constant</strong>; and <strong>T</strong> is the temperature in Kelvin. In a molecular dynamics simulation it is easy to calculate the atomic kinetic energy at any given time step - it is half the atom's mass times its velocity squared. The average for all atoms is trivially obtained. This allows the instantaneous temperature to be calculated with the above formula. If it turns out this temperature is not the temperature required, we can simply multiply the velocity of every atom by the <strong>square root</strong> of <strong>(T<sub>o</sub>/T)</strong>, where <strong>T<sub>o</sub></strong> is the required temperature. We can apply this rescaling at regular intervals during the equilibration period, and so drive the simulation consistently towards the desired temperature.
+    </p>
+
+    <p>
+      This is the simplest form of temperature scaling, but it is adequate for the purpose of achieving the required temperature. There are much more subtle methods for controlling temperature in a simulation, which do not have such a drastic effect on the molecular motion. Deriving and proving such methods is an active area of research.
+    </p>
+
+    <nav class="page-nav">
+      <a href="moldyn2.html"><img src="../Icons/back.gif" border="0" alt="Back"></a>
+      <a href="../Basic/Contents.html"><img src="../Icons/contents.gif" border="0" alt="Contents"></a>
+    </nav>
+  </div>
+
+</body>
+</html>
+<!-- Copyright Daresbury Laboratory 2000. Reproduction by permission only. -->

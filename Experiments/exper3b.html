@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../responsive.css" />
+  <title>Democritus: Condensation Instructions</title>
+  <style>
+    .instruction-tree {
+      margin: 1.5rem auto;
+      max-width: 580px;
+    }
+    details {
+      margin: 0.75rem 0;
+      cursor: pointer;
+    }
+    summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0b1d5a;
+      outline: none;
+    }
+    summary::-webkit-details-marker {
+      display: none;
+    }
+    summary::before {
+      content: "";
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      background: url("../Icons/fold.gif") no-repeat center;
+      flex-shrink: 0;
+    }
+    details[open] > summary::before {
+      background: url("../Icons/unfold.gif") no-repeat center;
+    }
+    .instruction-body {
+      padding: 0.6rem 0 0.4rem 25px;
+      font-size: 1rem;
+      line-height: 1.55;
+      color: #1a1a24;
+    }
+  </style>
+</head>
+<body background="../Textures/iepback.gif" class="experiment-lesson">
+
+  <center>
+    <h1 class="brand">DEMOCRITUS</h1>
+  </center>
+
+  <div class="content-wrap">
+    <center>
+      <h2 class="theory-title" style="color: #cc0000; font-size: 1.8rem; margin-top: 1rem;">Condensation</h2>
+      <h3 style="color: #2b52b2; font-size: 1.25rem; margin: 0.5rem 0 1.2rem;">Instructions</h3>
+    </center>
+
+    <div class="instruction-tree">
+      <details>
+        <summary>Lower the density of the system to a minimum</summary>
+        <div class="instruction-body">
+          You can do this by moving the density slider to the far left.<br>
+          We wish to start with a system that most resembles a gas.
+        </div>
+      </details>
+
+      <details>
+        <summary>Now decrease the temperature drastically</summary>
+        <div class="instruction-body">
+          Move the temperature slider far to the left. Try not to take it down right to the bottom.<br>
+          The atoms slow down almost to zero motion. The system must now be left for approximately 30 minutes. Come back at 10-minute intervals and see what is happening.
+        </div>
+      </details>
+
+      <details>
+        <summary>What has happened to the system?</summary>
+        <div class="instruction-body">
+          If the experiment has worked correctly, atoms will have collected together in groups. How many groups do you have? Would the groups join together if you left it for longer? (Try it if you have time!)<br><br>
+          Look closely at each group and see if the atoms form ordered structures or disordered structures. What do you think these groups of atoms represent? Why have they formed?<br><br>
+          If we were simulating water, what do you think the different groups would represent?<br><br>
+          If all you see are ordered structures, try increasing the temperature by a very small amount. Alternatively, repeat the experiment but do not drop the temperature so far.
+        </div>
+      </details>
+    </div>
+
+    <center style="margin: 2rem 0;">
+      <a class="legacy-action" href="exper3c.html">Find out more</a>
+    </center>
+
+    <div style="display: flex; justify-content: flex-end; margin-top: 2.5rem;">
+      <a href="expintr.html"><img src="../Icons/quit.gif" border="0" alt="Quit to Experiments"></a>
+    </div>
+  </div>
+
+</body>
+</html>
+<!-- Copyright Daresbury Laboratory 2000. Reproduction by permission only. -->

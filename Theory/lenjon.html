@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../responsive.css" />
+  <title>Democritus: Lennard-Jones Potential</title>
+</head>
+<body background="../Textures/iepback.gif">
+
+  <center>
+    <h1 class="brand">DEMOCRITUS</h1>
+  </center>
+
+  <div class="content-wrap">
+    <center>
+      <h2 class="theory-title"><img src="../Icons/BluStar.gif" height="15" alt="*">Lennard-Jones Potential<img src="../Icons/BluStar.gif" height="15" alt="*"></h2>
+    </center>
+
+    <p>
+      The Lennard-Jones function is a very famous empirical function in molecular dynamics. It is an approximate function which describes the energy of interaction between two rare gas atoms as a function of the distance between their centres. As such it is a model for all interatomic pair potentials. Its simplicity and accuracy make it highly suitable for molecular dynamics simulations. The form of the function (<strong>V(r)</strong>) is given by:
+    </p>
+
+    <center>
+      <img src="../Pictures/lenjon.gif" alt="V(r) equation">
+    </center>
+
+    <p>
+      In which <strong>r</strong> is the interatomic separation, epsilon is the energy constant (or <strong>well depth</strong>) and sigma is effectively the diameter of one of the atoms. A plot of this function shows a number of important characteristics:
+    </p>
+
+    <center>
+      <img src="../Pictures/lj.gif" alt="Plot of Lennard-Jones Potential">
+    </center>
+
+    <p>
+      At short range (small <strong>r</strong>) the potential energy is very large and positive, revealing that this is a very unfavourable arrangement of the atoms (it indicates that the two atoms are strongly overlapping). At long range the potential energy is small and negative. This indicates that at this range the pair of atoms experiences a stabilising influence. (In fact this corresponds to the London dispersion energy, caused by a subtle form of electrical attraction known as the instantaneous dipole-dipole interaction). At a separation slightly greater than sigma, the energy is at a minimum. This where the atom pair is stable, and will be content to remain in this position until some external influence disturbs them. The basic shape of this curve is common to almost all empirical potentials and captures the essentials of interatomic (nonbonding) forces. This type of potential was anticipated by van der Waals in his famous gas equation.
+    </p>
+
+    <p>
+      We can use the potential energy function to calculate the force between the atoms. Mathematically this is given by the negative of the first derivative of the function - in other words the negative of the slope of the graph at all points. Such a derivation shows that when the atoms are close the force is repulsive, at long range it is attractive, and at the energy minimum, the force is zero - as expected! The mathematical form of the force is as follows:
+    </p>
+
+    <center>
+      <img src="../Pictures/ljforce.gif" alt="Lennard-Jones force equation">
+    </center>
+
+    <p>
+      Note that the force <strong>F</strong> is a <strong>vector</strong>, with components in three directions: X,Y,Z. This is quite different from the potential function, which is a <strong>scalar</strong> and has only one value for each distance <strong>r</strong>. This is one reason why it is more convenient to work with potential functions rather than force laws.
+    </p>
+
+    <p>
+      The underlying potential energy function in the program <strong>Democritus</strong> is a variant of the Lennard-Jones potential called the <a href="shifted.html">Shifted force</a> potential, which has special advantages in simulations where the potential energy function and associated forces are truncated at some prescribed interatomic separation (i.e. a spherical cut off is applied).
+    </p>
+
+    <nav class="page-nav">
+      <a href="eqnmotion.html"><img src="../Icons/back.gif" border="0" alt="Back"></a>
+      <a href="../Basic/Contents.html"><img src="../Icons/contents.gif" border="0" alt="Contents"></a>
+      <a href="shifted.html"><img src="../Icons/next.gif" border="0" alt="Next"></a>
+    </nav>
+  </div>
+
+</body>
+</html>
+<!-- Copyright Daresbury Laboratory 2000. Reproduction by permission only. -->

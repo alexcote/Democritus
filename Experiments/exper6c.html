@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../responsive.css" />
+  <title>Democritus: Molecular Collisions</title>
+</head>
+<body background="../Pictures/iepback.gif" class="experiment-lesson">
+
+  <center>
+    <h1 class="brand">DEMOCRITUS</h1>
+  </center>
+
+  <div class="content-wrap">
+    <center>
+      <h2 class="theory-title" style="color: #cc0000; font-size: 1.8rem; margin-top: 1rem;">Velocity Autocorrelation</h2>
+      <h3 style="color: #2b52b2; font-size: 1.25rem; margin: 0.5rem 0 1.2rem;">Molecular collisions</h3>
+    </center>
+
+    <p>
+      At a fixed temperature, the rate at which molecules collide is determined by the density. (You should see this from the molecular dynamics engine.) This happens because molecules at low density have to travel further between collisions and this reduces the collision rate.
+    </p>
+
+    <p>
+      The VACF function falls towards zero with increasing time because the motion of the molecules is affected by the intermolecular forces. When the VAC function becomes zero, this is a measure of the average time between collisions because it represents the point where the velocity reverses direction in a collision. It follows that the sooner the VAC function falls to zero, the shorter the time between collisions.
+    </p>
+
+    <p>
+      The densities of liquids and gases are generally very different and the VACF function can detect this easily. Also solids and liquids differ because motion in solids is dominated by vibration while motion in liquids is dominated by diffusion. So the VAC function of a solid system often shows more oscillations than a liquid system. Through such differences, the VAC function reveals important differences between solids, liquids and gases.
+    </p>
+
+    <center style="margin: 2rem 0 1rem;">
+      <a href="../Theory/vaf.html" target="_top" style="font-size: 1.15rem; font-weight: 700; color: #111b53; text-decoration: underline;">
+        More advanced theory on the velocity autocorrelation function
+      </a>
+    </center>
+
+    <div style="display: flex; justify-content: flex-end; margin-top: 2.5rem;">
+      <a href="expintr.html"><img src="../Icons/quit.gif" border="0" alt="Quit to Experiments"></a>
+    </div>
+  </div>
+
+</body>
+</html>
+<!-- Copyright Daresbury Laboratory 2000. Reproduction by permission only. -->

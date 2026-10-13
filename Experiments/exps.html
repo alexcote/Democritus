@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../responsive.css" />
+  <title>Democritus: Experiments</title>
+  <style>
+    /* Container for the text panel + overlay */
+    .text-panel-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+    }
+
+    /* Full-coverage graph overlay over the text panel */
+    .graph-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      background: #f4f4f4;
+      flex-direction: column;
+    }
+
+    .graph-overlay.active {
+      display: flex;
+    }
+
+    .graph-overlay-header {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 8px 12px;
+      background: #e2e4f0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    }
+
+    .close-graph-btn {
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      font-weight: bold;
+      color: #0c1d63;
+      background: #ffffff;
+      border: 1px solid #7a7a7a;
+      border-radius: 4px;
+      padding: 4px 12px;
+      cursor: pointer;
+    }
+
+    .close-graph-btn:active {
+      background: #ddd;
+    }
+
+    .graph-overlay-frame {
+      width: 100%;
+      flex: 1;
+      border: 0;
+    }
+  </style>
+</head>
+<body class="experiment-shell">
+  <main class="experiment-layout">
+    <iframe class="experiment-panel" id="mdPanel" name="md" src="MD.html?desc=1" title="Molecular Dynamics Engine"></iframe>
+    
+    <div class="text-panel-wrapper">
+      <iframe class="experiment-panel" id="textPanel" name="text" src="expintr.html" title="Experiments"></iframe>
+
+      <!-- Temporary graph overlay -->
+      <div id="graphOverlay" class="graph-overlay">
+        <div class="graph-overlay-header">
+          <button type="button" id="closeGraphBtn" class="close-graph-btn">&times; Close Graph</button>
+        </div>
+        <iframe id="graphFrame" class="graph-overlay-frame" title="Graph Plot"></iframe>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const mdFrame = document.getElementById('mdPanel');
+    const textFrame = document.getElementById('textPanel');
+    const graphOverlay = document.getElementById('graphOverlay');
+    const graphFrame = document.getElementById('graphFrame');
+    const closeGraphBtn = document.getElementById('closeGraphBtn');
+    let isInitialLoad = true;
+
+    // Handle open/close overlay requests and message relays
+    window.addEventListener('message', (event) => {
+      const data = event.data;
+      if (!data) return;
+
+      if (data.action === 'open-graph-overlay') {
+        graphFrame.src = `Graph.html?type=${data.type}`;
+        graphOverlay.classList.add('active');
+      } else if (data.type === 'rdf' || data.type === 'msd' || data.type === 'vac') {
+        // Forward live graph calculations down into graphFrame
+        if (graphFrame && graphFrame.contentWindow) {
+          graphFrame.contentWindow.postMessage(data, '*');
+        }
+      } else if (data === 'show-desc' || data === 'hide-desc') {
+        if (mdFrame && mdFrame.contentWindow) {
+          mdFrame.contentWindow.postMessage(data, '*');
+        }
+      }
+    });
+
+    closeGraphBtn.addEventListener('click', () => {
+      graphOverlay.classList.remove('active');
+      graphFrame.src = 'about:blank';
+      if (mdFrame && mdFrame.contentWindow) {
+        mdFrame.contentWindow.postMessage('graph-closed', '*');
+      }
+    });
+
+    textFrame.addEventListener('load', () => {
+      if (isInitialLoad) {
+        isInitialLoad = false;
+        return;
+      }
+      if (mdFrame && mdFrame.contentWindow) {
+        mdFrame.contentWindow.postMessage('hide-desc', '*');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../responsive.css" />
+  <title>Democritus: Newton's Equations of Motion</title>
+</head>
+<body background="../Textures/iepback.gif">
+
+  <center>
+    <h1 class="brand">DEMOCRITUS</h1>
+  </center>
+
+  <div class="content-wrap">
+    <center>
+      <h2 class="theory-title">
+        <img src="../Icons/GreStar.gif" height="15" alt="*">
+        Newton's Equations of Motion
+        <img src="../Icons/GreStar.gif" height="15" alt="*">
+      </h2>
+    </center>
+
+    <p>
+      Isaac Newton's equations of motion have been of immense importance in science since first formulated in his famous <strong>Principia</strong> in 1686. They provide the basis for a dynamical description of matter, which in principle can explain all its physical properties. Their application to molecular systems is the basis of Molecular Dynamics. The laws are as follow:
+    </p>
+
+    <ol>
+      <li>A body maintains its state of rest or of uniform motion in a straight line, unless acted upon by a force.</li>
+      <li>The applied force is equal to the rate of change of momentum of the body. (Momentum is the mass multiplied by the velocity.)</li>
+      <li>Two isolated bodies acting upon each other experience equal and opposite forces.</li>
+    </ol>
+
+    <p>
+      Law 1 is a definition of what a force is and indicates how we should recognise when a force is acting. Law 2 tells us how we can determine the strength of a force from observation of what it does to a body's motion; alternatively if the force is known, it can be used as a prescription for determining how the body will move (this is precisely what molecular dynamics is concerned with). Law 3 explains how the force between two bodies is to be assigned to each body. In molecular dynamics, the two bodies concerned are, of course, atoms.
+    </p>
+
+    <p>
+      To apply Newton's laws to determine the motion of a molecular (or indeed any) system, we must first calculate the forces. In a molecular system, we assume the total force <strong>F</strong> acting on an atom is the sum of all the forces that the other atoms in the system exert on it. (These are assumed to be derived from an <strong>empirical interatomic potential function</strong>, such as the <a href="lenjon.html">Lennard-Jones potential</a>.) The mathematical form of Law 2 is:
+    </p>
+
+    <center>
+      <p><strong>F</strong> = m<strong>a</strong>,</p>
+    </center>
+
+    <p>
+      where <strong>m</strong> is the mass of an atom and <strong>a</strong> is the acceleration. In differential calculus, the acceleration is related to the velocity, and the velocity to the position through the mathematical process of <strong>integration</strong>. Much of what is called analytical mechanics is concerned with this integration process. In molecular dynamics it is performed numerically, using an <a href="verlet.html">integration algorithm</a>.
+    </p>
+
+    <nav class="page-nav">
+      <a href="moldyn2.html"><img src="../Icons/back.gif" border="0" alt="Back"></a>
+      <a href="../Basic/Contents.html"><img src="../Icons/contents.gif" border="0" alt="Contents"></a>
+    </nav>
+  </div>
+
+</body>
+</html>
+<!-- Copyright Daresbury Laboratory 2000. Reproduction by permission only. -->

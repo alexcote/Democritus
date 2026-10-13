@@ -1,0 +1,433 @@
+html.experiment-shell-root,
+body.experiment-shell {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: url("Textures/iepback.gif") repeat;
+}
+
+/* Update base experiment layout to flex up to 40% on wide viewports */
+.experiment-layout {
+  display: grid;
+  grid-template-columns: minmax(340px, 38%) minmax(0, 62%);
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+}
+
+/* Allow text and lesson content to expand wider on big monitors */
+.content-wrap {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 0 16px 2.5rem;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #1a1a24;
+}
+
+/* High-resolution / large-screen scaling (1440p and 4K displays) */
+@media screen and (min-width: 1600px) {
+  .experiment-layout {
+    grid-template-columns: minmax(460px, 40%) minmax(0, 60%);
+  }
+
+  .content-wrap {
+    max-width: 960px; /* Expands reading column and button grid on 4K */
+  }
+
+  .content-wrap p,
+  .content-wrap li {
+    font-size: 1.25rem; /* Scales typography proportionally to match the larger engine */
+    line-height: 1.65;
+  }
+}
+
+.experiment-panel {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  border: 0;
+  background: transparent;
+}
+
+.legacy-action {
+  box-sizing: border-box;
+  display: inline-flex;
+  min-width: 235px;
+  min-height: 66px;
+  align-items: center;
+  justify-content: center;
+  margin: 16px auto;
+  padding: 12px 20px;
+  border: 3px outset #d8d8e6;
+  background: linear-gradient(#f5f5fa, #b8bed2);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
+  color: #111b53;
+  font: bold 1.6rem Arial, Helvetica, sans-serif;
+  text-align: center;
+  text-decoration: none;
+}
+
+.legacy-action:hover { background: linear-gradient(#fff, #d4ddf3); }
+.legacy-action:active { border-style: inset; }
+
+@media screen and (max-width: 760px) {
+  html {
+    min-width: 0;
+    font-size: 16px;
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    box-sizing: border-box;
+    width: auto !important;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0 !important;
+    padding: 12px !important;
+    overflow-wrap: anywhere;
+    line-height: 1.55;
+  }
+
+  img, video, canvas, object, embed, applet, iframe {
+    max-width: 100% !important;
+  }
+
+  img { height: auto; }
+
+  img[src$="BluStar.gif"],
+  img[src$="RedStar.gif"],
+  img[src$="GreStar.gif"] {
+    width: 15px !important;
+    height: 15px !important;
+    max-width: none !important;
+    vertical-align: middle;
+  }
+
+  a, p, li, td, th { overflow-wrap: anywhere; }
+
+  table, tbody {
+    display: block;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  tr {
+    display: block;
+    width: 100%;
+  }
+
+  td, th {
+    display: block;
+    width: 100% !important;
+    height: auto !important;
+    padding: 0.45rem !important;
+  }
+
+  table table { width: auto !important; }
+
+  table[border="5"] {
+    display: table !important;
+    width: auto !important;
+    max-width: 100% !important;
+    border-collapse: separate !important;
+  }
+
+  table[border="5"] > tbody { display: table-row-group !important; width: auto !important; }
+  table[border="5"] > tbody > tr { display: table-row !important; width: auto !important; }
+  table[border="5"] > tbody > tr > td { display: table-cell !important; width: auto !important; }
+
+  center { max-width: 100%; }
+
+  pre {
+    max-width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  pre:has(> a > img[src$="back.gif"]) {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 44px;
+    margin: 0.75rem 0;
+    padding: 0;
+    white-space: normal;
+  }
+
+  pre:has(> a > img[src$="back.gif"]) > a {
+    position: absolute;
+    top: 50%;
+    display: inline-flex;
+    align-items: center;
+    transform: translateY(-50%);
+  }
+
+  pre:has(> a > img[src$="back.gif"]) > a:nth-of-type(1) { left: 0; }
+  pre:has(> a > img[src$="back.gif"]) > a:nth-of-type(2) { left: 50%; transform: translate(-50%, -50%); }
+  pre:has(> a > img[src$="back.gif"]) > a:nth-of-type(3) { right: 0; }
+
+  ul, ol { padding-inline-start: 1.5rem; }
+
+  font[size="+4"] { font-size: 2rem !important; }
+  font[size="+3"] { font-size: 1.7rem !important; }
+  font[size="+2"] { font-size: 1.35rem !important; }
+  font[size="+1"] { font-size: 1.1rem !important; }
+
+  .experiment-lesson table[border="5"] {
+    width: 100% !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+
+  .experiment-lesson table[border="5"] > tbody > tr > td {
+    padding: 0 !important;
+    border: 0 !important;
+    text-align: center;
+  }
+
+  .experiment-lesson table[border="5"] font[size="+3"] { font-size: 1rem !important; white-space: nowrap; }
+  .experiment-lesson table[border="5"] font[size="+2"] { font-size: 0.85rem !important; white-space: nowrap; }
+  
+  /* Collapse excessive spacing between lesson titles on mobile */
+  .experiment-lesson p:has(+ p),
+  .experiment-lesson p:empty,
+  .experiment-lesson p > br {
+    display: none;
+  }
+
+  .experiment-lesson center {
+    margin: 4px 0;
+  }
+
+  input, select, textarea, button { max-width: 100%; }
+
+  .legacy-action {
+    min-width: 0;
+    min-height: 44px;
+    width: min(100%, 280px);
+    margin: 0.75rem auto;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+  }
+
+  .legacy-action:focus-visible { outline: 3px solid #173f86; }
+
+  .experiment-layout {
+    grid-template-columns: 100%;
+    grid-template-rows: 485px auto;
+	row-gap: 16px;
+    height: auto;
+    width: 100%;
+    overflow-y: auto;
+  }
+  
+  body.experiment-shell {
+    overflow-y: auto;
+  }
+
+  .experiment-panel {
+    height: 100%;
+    min-height: 0;
+  }
+  
+  .experiment-layout > iframe.experiment-panel {
+    height: 485px;
+    min-height: 485px;
+  }
+
+  .experiment-layout > .text-panel-wrapper {
+    height: auto;
+    min-height: 500px;
+  }
+}
+
+/* Democritus Brand Header - Realistic 3D Plaque */
+.brand {
+   display: inline-block;
+   margin: 0;
+   padding: 10px clamp(10px, 3vw, 24px);
+
+   /* 1. Prevent mid-word and character wrapping completely */
+   white-space: nowrap;
+   overflow-wrap: normal;
+   word-break: normal;
+
+   /* Plaque surface color */
+   background: #e3e3e3;
+
+   /* Natural directional 3D outer bevel */
+   border-top: 5px solid #ffffff;
+   border-left: 5px solid #dfdfdf;
+   border-right: 5px solid #7a7a7a;
+   border-bottom: 5px solid #4a4a4a;
+
+   /* Cast shadow onto page + sunken inner groove */
+   box-shadow:
+      2px 3px 6px rgba(0, 0, 0, 0.28),
+      inset 0 0 0 2px #e3e3e3,
+      inset 1px 1px 0 2px #555555,
+      inset -1px -1px 0 2px #ffffff;
+
+   /* Typography: fluid font-size that scales smoothly with container width */
+   color: #08083f;
+   font-family: "Wide Latin", "Times New Roman", serif;
+   font-size: clamp(1rem, 5.5vw, 2rem);
+   line-height: 1.2;
+   text-align: center;
+   letter-spacing: 1px;
+   max-width: 95%;
+}
+
+@media (max-width: 760px) {
+   .brand {
+      padding: 8px 10px;
+      font-size: clamp(0.85rem, 5vw, 1.45rem);
+      letter-spacing: 0.5px;
+   }
+}
+
+@media (max-width: 360px) {
+   .brand {
+      padding: 6px 8px;
+      font-size: clamp(0.75rem, 4.5vw, 1rem);
+      letter-spacing: 0;
+   }
+}
+/* ==========================================================================
+   Page Content Wrapper & Linear Navigation
+   ========================================================================== */
+
+/* 1. Base Container & Primary Reading Font */
+.content-wrap {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 0 16px 2.5rem;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #1a1a24;
+}
+
+/* 2. Classical Serif for Section Headings */
+/* Section heading styling with snug stars */
+.content-wrap .theory-title {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;                  /* Tighter distance between star and text */
+  font-family: "Georgia", "Palatino Linotype", "Times New Roman", serif;
+  font-size: 1.5rem;          /* Increased from 1.35rem */
+  font-weight: 700;
+  margin: 1.3rem auto;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.content-wrap .theory-title img {
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* 3. Body Paragraphs  */
+.content-wrap p {
+  font-size: 1.12rem;         
+  line-height: 1.6;           
+  margin: 1.1rem 0;
+  text-align: left;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* List Items: Increase to keep them proportional */
+.content-wrap li {
+  font-size: 1.05rem;         
+  line-height: 1.5;
+  margin: 0.35rem 0;
+  text-align: left;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* Sub-list nesting */
+.content-wrap ul,
+.content-wrap ol {
+  margin: 0.3rem 0;
+  padding-inline-start: 1.5rem;
+}
+
+.content-wrap li > ul,
+.content-wrap li > ol {
+  margin: 0.15rem 0;
+}
+
+/* Ensure centered diagrams stay centered */
+.content-wrap center p,
+.content-wrap p.center,
+.content-wrap figure {
+  text-align: center;
+}
+
+.content-wrap center img,
+.content-wrap img.center {
+  display: inline-block;
+  margin: 0.5rem auto;
+}
+/* ========================================================
+   Experiment Lesson Accordion Typography (Collapsible Trees)
+   ======================================================== */
+
+.instruction-tree {
+  max-width: 620px;
+  margin: 1.5rem auto;
+}
+
+/* Accordion Header / Question: Sits neatly between title (1.5rem) and body (1.12rem) */
+.instruction-tree details summary,
+.experiment-lesson summary {
+  font-size: 1.25rem !important;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #0b1d5a;
+  cursor: pointer;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* Accordion Expanded Body Text: Exact match for .content-wrap p */
+.instruction-tree .instruction-body,
+.experiment-lesson .instruction-body {
+  font-size: 1.12rem !important;
+  line-height: 1.6;
+  color: #1a1a24;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* Sub-lists inside instructions: Exact match for .content-wrap li */
+.instruction-tree .instruction-body li,
+.experiment-lesson .instruction-body li {
+  font-size: 1.05rem !important;
+  line-height: 1.5;
+  margin: 0.35rem 0;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* 5. Navigation Bar */
+.page-nav {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin-top: 2.5rem;
+}
+
+@media (max-width: 480px) {
+  .page-nav {
+    gap: 14px;
+    margin-top: 1.75rem;
+  }
+}
+
+.page-nav a {
+  display: inline-flex;
+  align-items: center;
+}

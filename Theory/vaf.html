@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../responsive.css" />
+  <title>Democritus: The Velocity Autocorrelation Function</title>
+</head>
+<body background="../Textures/iepback.gif">
+
+  <center>
+    <h1 class="brand">DEMOCRITUS</h1>
+  </center>
+
+  <div class="content-wrap">
+    <center>
+      <h2 class="theory-title"><img src="../Icons/BluStar.gif" height="15" alt="*">The Velocity Autocorrelation Function<img src="../Icons/BluStar.gif" height="15" alt="*"></h2>
+    </center>
+
+    <p>
+      The velocity autocorrelation function (VAF) is a prime example of a time dependent correlation function, and is important because it reveals the underlying nature of the dynamical processes operating in a molecular system. It is constructed as follows.
+    </p>
+
+    <p>
+      At a chosen origin in time (i.e. some moment when we chose to start the calculation) we store all three components of the velocity v<sub>i</sub>, where:
+    </p>
+
+    <center>
+      <p style="text-align: center; font-weight: bold;">v<sub>i</sub> = (v<sub>x</sub>(t<sub>0</sub>), v<sub>y</sub>(t<sub>0</sub>), v<sub>z</sub>(t<sub>0</sub>))<sub>i</sub></p>
+    </center>
+
+    <p>
+      for every atom (i) in the system. We can already calculate the first contribution to the VAF, corresponding to time zero (i.e. t=0). This is simply the average of the scalar products v<sub>i</sub> &middot; v<sub>i</sub> for all atoms:
+    </p>
+
+    <center>
+      <img src="../Pictures/vafeq1.gif" alt="VAF at t=0">
+    </center>
+
+    <p>
+      At the next time step in the simulation t = t<sub>0</sub> + &Delta;t; and the corresponding velocity for each atom is:
+    </p>
+
+    <center>
+      <p style="text-align: center; font-weight: bold;">V<sub>i</sub> = (V<sub>x</sub>(t<sub>0</sub> + &Delta;t), V<sub>y</sub>(t<sub>0</sub> + &Delta;t), V<sub>z</sub>(t<sub>0</sub> + &Delta;t))<sub>i</sub></p>
+    </center>
+
+    <p>
+      and we can calculate the next point of the VAF as:
+    </p>
+
+    <center>
+      <img src="../Pictures/vafeq2.gif" alt="VAF at t1">
+    </center>
+
+    <p>
+      We can repeat this procedure at each subsequent time step and so obtain a sequence of points in the VAF, as follows:
+    </p>
+
+    <center>
+      <img src="../Pictures/vafeq3.gif" alt="VAF general sequence">
+    </center>
+
+    <p>or (for short):</p>
+
+    <center>
+      <p style="text-align: center; font-weight: bold;">C<sub>v</sub>(t) = &lang; v<sub>i</sub>(0) &middot; v<sub>i</sub>(t) &rang;</p>
+    </center>
+
+    <p>
+      Though this can be continued forever, we generally stop after a fixed value of n, and start again to calculate another VAF, beginning at a new time origin. The final VAF can then be an average of all the VAF's we have calculated in the course of our simulation. The result is usually plotted as a function of time, for example:
+    </p>
+
+    <center>
+      <img src="../Pictures/vacf.gif" alt="A typical velocity autocorrelation plot">
+    </center>
+
+    <p>
+      So far, so good, but what could such a function tell us about the molecular system?
+    </p>
+
+    <p>
+      Consider a single atom at time zero. At that instant the atom (i) will have a specific velocity v<sub>i</sub>. If the atoms in the system did not interact with each other, then Newton's Laws of motion tell us that the atom would retain this velocity for all time. This of course means that all our points C<sub>v</sub>(t) would have the same value, and if all the atoms behaved like this, the plot would be a horizontal line. It follows that a VAF plot that is almost horizontal, implies very weak forces are acting in the system.
+    </p>
+
+    <p>
+      On the other hand, what happens to the velocity if the forces are small but not negligible? Then we would expect both its magnitude and direction to change gradually under the influence of these weak forces. In this case we expect the scalar product of V<sub>i</sub>(t=t<sub>0</sub>) with V<sub>i</sub>(t=t<sub>0</sub>+n&Delta;t) to decrease on average, as the velocity is changed. (In statistical mechanics we say that the velocity decorrelates with time, which is the same as saying the atom 'forgets' what its initial velocity was.) In such a system, the VAF plot is a simple exponential decay, revealing the presence of weak forces slowly destroying the velocity correlation. Such a result is typical of the molecules in a gas.
+    </p>
+
+    <p>
+      What happens when the interatomic forces are strong? Strong forces are most evident in high density systems, such as solids and liquids, where atoms are packed closely together. In these circumstances the atoms tend to seek out locations where there is a near balance between repulsive forces and attractive forces, since this is where the atoms are most energetically stable. In solids these locations are extremely stable, and the atoms cannot escape easily from their positions. Their motion is therefore an oscillation; the atoms vibrate backwards and forwards, reversing their velocity at the end of each oscillation. If we now calculate the VAF, we will obtain a function that oscillates strongly from positive to negative values and back again. The oscillations will not be of equal magnitude however, but will decay in time, because there are still perturbative forces acting on the atoms to disrupt the perfection of their oscillatory motion. So what we see is a function resembling a damped harmonic motion.
+    </p>
+
+    <p>
+      Liquids behave similarly to solids, but now the atoms do not have fixed regular positions. A diffusive motion is present to destroy rapidly any oscillatory motion. The VAF therefore may perhaps show one very damped oscillation (a function with only one minimum) before decaying to zero. In simple terms this may be considered a collision between two atoms before they rebound from one another and diffuse away.
+    </p>
+
+    <p>
+      As well as revealing the dynamical processes in a system, the VAF has other interesting properties. Firstly, it may be Fourier transformed to project out the underlying frequencies of the molecular processes. This is closely related to the infra-red spectrum of the system, which is also concerned with vibration on the molecular scale. Secondly, provided the VAF decays to zero at long time, the function may be integrated mathematically to calculate the diffusion coefficient D<sub>0</sub>, as in:
+    </p>
+
+    <center>
+      <img src="../Pictures/vafeq4.gif" alt="Green-Kubo diffusion integral">
+    </center>
+
+    <p>
+      This is a special case of a more general relationship between the VAF and the mean square displacement, and belongs to a class of properties known as the Green-Kubo relations, which relate correlation functions to so-called transport coefficients.
+    </p>
+
+    <nav class="page-nav">
+      <a href="moldyn3.html"><img src="../Icons/back.gif" border="0" alt="Back"></a>
+      <a href="../Basic/Contents.html"><img src="../Icons/contents.gif" border="0" alt="Contents"></a>
+    </nav>
+  </div>
+
+</body>
+</html>
+<!-- Copyright Daresbury Laboratory 2000. Reproduction by permission only. -->

@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Democritus: Molecular Dynamics Simulation</title>
+  <style>
+    :root {
+      --panel-bg: #c1c1d7;
+      --panel-border: rgba(0, 0, 0, 0.3);
+      --panel-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.6), inset -1px -1px 0 rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
+      --text-main: #0c1d63;
+      --text-muted: #2d3b6e;
+      --field-bg: #ffffff;
+      --field-border: rgba(0, 0, 0, 0.35);
+      --canvas-bg: #102244;
+      --btn-bg: #e2e4f0;
+      --btn-hover: #f0f2fa;
+    }
+
+    * { box-sizing: border-box; }
+    
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      background: url("../Textures/iepback.gif") repeat fixed;
+      color: var(--text-main);
+      overflow: hidden; /* Eliminates all frame scrollbars */
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;        /* Flexbox center */
+      justify-content: flex-start;
+      text-align: center;         /* Inline centering fallback */
+      padding: 8px 0 0 0;
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Scaling anchor: explicitly centered with margin auto */
+    .applet-scaler {
+      display: inline-flex;       /* Plays nicely with both flexbox and margin auto */
+      flex-direction: column;
+      align-items: center;
+      width: 380px;               /* Native unscaled width */
+      margin: 0 auto;             /* Forces horizontal centering even when zoomed */
+    }
+
+    .applet-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      box-shadow: var(--panel-shadow);
+      width: 380px;
+      padding: 14px 16px 16px;
+    }
+
+    .sim-title {
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 0 0 12px;
+      color: var(--text-main);
+    }
+
+    .canvas-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    canvas {
+      display: block;
+      width: 320px;
+      height: 320px;
+      background: var(--canvas-bg);
+      border: 1px solid rgba(16, 34, 68, 0.7);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+    }
+
+    /* Metric Readouts */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+
+    .metric-cell {
+      background: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      padding: 4px 2px;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .metric-value {
+      background: var(--field-bg);
+      border: 1px solid var(--field-border);
+      font-family: "Courier New", Courier, monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: #0b1d5a;
+      padding: 3px 0;
+    }
+
+    /* Sliders */
+    .controls {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 8px 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .control-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      text-align: center;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #1d5eb9;
+      cursor: pointer;
+    }
+
+    /* Buttons */
+    .button-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    button {
+      background: var(--btn-bg);
+      border: 1px solid var(--panel-border);
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 7px 0;
+      cursor: pointer;
+      box-shadow: inset 1px 1px 0 rgba(255,255,255,0.7), 1px 1px 2px rgba(0,0,0,0.15);
+      transition: background 0.1s ease;
+    }
+
+    button:hover:not(:disabled) {
+      background: var(--btn-hover);
+    }
+
+    button:active:not(:disabled) {
+      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.3);
+    }
+
+    button:disabled, input:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .description-wrap {
+      display: none;
+      margin-top: 10px;
+      text-align: center;
+    }
+    
+    .show-desc .description-wrap {
+      display: block;
+    }
+    
+    .desc-link {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0c1d63;
+      text-decoration: underline;
+	  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      padding: 2px 6px;
+      transition: color 0.15s ease;
+    }
+    
+    .desc-link:hover {
+      color: #800000;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="applet-scaler" id="appletScaler">
+    <div class="applet-card">
+      <div class="sim-title">Molecular Dynamics Engine</div>
+      
+      <div class="canvas-wrapper">
+        <canvas id="simCanvas" width="320" height="320"></canvas>
+      </div>
+
+      <div class="info-grid">
+        <div class="metric-cell">
+          <div class="metric-label">Density</div>
+          <div class="metric-value" id="fieldDen">0.500</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Temp (Av)</div>
+          <div class="metric-value" id="fieldTem">500</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Pressure</div>
+          <div class="metric-value" id="fieldPrs">0.000</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Energy</div>
+          <div class="metric-value" id="fieldTot">0.000</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="control-label">Den &lt;-&gt;</div>
+        <input id="densitySlider" type="range" min="60" max="1000" step="1" value="500" />
+        <div class="control-label">Tem &lt;-&gt;</div>
+        <input id="tempSlider" type="range" min="10" max="1000" step="1" value="500" />
+      </div>
+
+      <div class="button-row">
+        <button type="button" id="rdfBtn">RDF</button>
+        <button type="button" id="msdBtn">MSD</button>
+        <button type="button" id="vacBtn">VAC</button>
+      </div>
+    </div>
+    
+    <div class="description-wrap">
+      <a href="expexpl.html" target="text" class="desc-link">Description</a>
+    </div>
+  </div>
+
+  <script>
+    // Pure, uniform 2D zoom calculation based on available width and height
+    const scaler = document.getElementById('appletScaler');
+
+    function updateAppletScale() {
+      // Leave 28px width margin and 68px bottom clearance for the Description link
+      const availWidth = window.innerWidth - 28;
+      const availHeight = window.innerHeight - 68;
+
+      // Base applet proportions (380px wide by ~590px tall total with Description)
+      const scaleX = availWidth / 380;
+      const scaleY = availHeight / 590;
+
+      // Scale up smoothly on large screens, gently constrained vertically
+      const scale = Math.max(0.78, Math.min(scaleX, scaleY, 1.75));
+
+      scaler.style.zoom = scale;
+      scaler.style.margin = '0 auto';
+    }
+
+    window.addEventListener('resize', updateAppletScale);
+    updateAppletScale();
+
+    if (new URLSearchParams(window.location.search).get('desc') === '1') {
+      document.body.classList.add('show-desc');
+    }
+
+    window.addEventListener('message', (event) => {
+      if (event.data === 'hide-desc') {
+        document.body.classList.remove('show-desc');
+      } else if (event.data === 'show-desc') {
+        document.body.classList.add('show-desc');
+      }
+    });
+
+    function checkSiblingIntro() {
+      try {
+        if (window.parent && window.parent.frames && window.parent.frames['text']) {
+          const loc = window.parent.frames['text'].location;
+          const path = loc.pathname || loc.href || '';
+          if (path.length > 0) {
+            document.body.classList.toggle('show-desc', path.endsWith('expintr.html'));
+          }
+        }
+      } catch (e) {}
+    }
+
+    checkSiblingIntro();
+    setInterval(checkSiblingIntro, 400);
+
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+    const densitySlider = document.getElementById('densitySlider');
+    const tempSlider = document.getElementById('tempSlider');
+    const fieldDen = document.getElementById('fieldDen');
+    const fieldTem = document.getElementById('fieldTem');
+    const fieldPrs = document.getElementById('fieldPrs');
+    const fieldTot = document.getElementById('fieldTot');
+
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = 320 * dpr;
+    canvas.height = 320 * dpr;
+    ctx.scale(dpr, dpr);
+    const logicalSize = 320;
+
+    class Simulate {
+      constructor() {
+        this.home = null;
+        this.matms = 5;
+        this.natms = this.matms * this.matms;
+        this.den = 0.5;
+        this.tem = 500.0;
+        this.bol = 0.004;
+        this.dtm = 0.001;
+        this.tst = this.dtm * 0.5;
+        this.num = 128;
+        this.nub = 250;
+        this.nstep = 0;
+        this.counter = 0;
+        this.nav = 0;
+        this.dtcnt = 0;
+        this.cntmsd = 0;
+        this.cntvac = 0;
+        this.rdfActive = false;
+        this.rdfSamples = 0;
+        this.msdActive = false;
+        this.msdStep = 0;
+        this.msdCycles = 0;
+        this.msdSamples = new Uint32Array(this.nub);
+        this.msdCurrent = new Float64Array(this.nub);
+        this.vacActive = false;
+        this.vacStep = 0;
+        this.vacCycles = 0;
+        this.gor = new Float64Array(this.num);
+        this.TR2 = new Float64Array(this.nub);
+        this.vac = new Float64Array(this.nub);
+        this.vac2 = new Float64Array(this.nub);
+        this.R2 = new Float64Array(this.nub);
+        this.rdfData = new Float64Array(this.num);
+        this.msdData = new Float64Array(this.nub);
+        this.vacData = new Float64Array(this.nub);
+        this.x = new Float64Array(this.natms);
+        this.y = new Float64Array(this.natms);
+        this.x0 = new Float64Array(this.natms);
+        this.y0 = new Float64Array(this.natms);
+        this.vx = new Float64Array(this.natms);
+        this.vy = new Float64Array(this.natms);
+        this.vx0 = new Float64Array(this.natms);
+        this.vy0 = new Float64Array(this.natms);
+        this.fx = new Float64Array(this.natms);
+        this.fy = new Float64Array(this.natms);
+        this.vol = 0.0;
+        this.box = 0.0;
+        this.dr = 0.0;
+        this.rct = 0.0;
+        this.alp = 0.0;
+        this.bet = 0.0;
+        this.tot = 0.0;
+        this.totav = 0.0;
+        this.pot = 0.0;
+        this.vir = 0.0;
+        this.kin = 0.0;
+        this.tmp = 0.0;
+        this.tmpav = 0.0;
+        this.prs = 0.0;
+        this.prsav = 0.0;
+        this.sid = 0.0;
+        this.mx = 0.0;
+        this.my = 0.0;
+        this.scl = 0.0;
+        this.ident = -1;
+        this.setParams(null, 0, this.matms, this.den, this.tem);
+      }
+
+      setParams(home, istep, iatms, xden, xtem) {
+        this.nstep = istep;
+        this.counter = 0;
+        this.nav = 0;
+        this.dtcnt = 0;
+        this.cntmsd = 0;
+        this.cntvac = 0;
+        this.matms = iatms;
+        this.natms = this.matms * this.matms;
+        this.den = xden;
+        this.tem = xtem;
+        this.home = home;
+        this.setVerlet();
+        this.setLattice();
+      }
+
+      setVerlet() {
+        this.tot = 0.0;
+        this.totav = 0.0;
+        this.pot = 0.0;
+        this.kin = 0.0;
+        this.prs = 0.0;
+        this.prsav = 0.0;
+        this.tmpav = 0.0;
+        this.bol = 0.004;
+        this.dtm = 0.001;
+        this.tst = this.dtm * 0.5;
+        this.natms = this.matms * this.matms;
+        this.vol = this.natms / this.den;
+        this.box = Math.sqrt(this.vol);
+        this.sid = Math.sqrt(this.vol / this.natms);
+        this.x = new Float64Array(this.natms);
+        this.y = new Float64Array(this.natms);
+        this.x0 = new Float64Array(this.natms);
+        this.y0 = new Float64Array(this.natms);
+        this.R2 = new Float64Array(this.nub);
+        this.TR2 = new Float64Array(this.nub);
+        this.vac = new Float64Array(this.nub);
+        this.vac2 = new Float64Array(this.nub);
+        this.msdSamples = new Uint32Array(this.nub);
+        this.msdCurrent = new Float64Array(this.nub);
+        this.rdfData = new Float64Array(this.num);
+        this.msdData = new Float64Array(this.nub);
+        this.vacData = new Float64Array(this.nub);
+        this.gor = new Float64Array(this.num);
+        this.vx = new Float64Array(this.natms);
+        this.vy = new Float64Array(this.natms);
+        this.vx0 = new Float64Array(this.natms);
+        this.vy0 = new Float64Array(this.natms);
+        this.fx = new Float64Array(this.natms);
+        this.fy = new Float64Array(this.natms);
+        this.rct = 0.5 * this.box;
+        this.dr = this.rct / this.num;
+        this.alp = 24.0 * (2.0 * Math.pow(this.rct, -12) - Math.pow(this.rct, -6)) / this.rct;
+        this.bet = 4.0 * (Math.pow(this.rct, -12) - Math.pow(this.rct, -6)) + this.alp * this.rct;
+      }
+
+      setLattice() {
+        let k = 0;
+        for (let i = 0; i < this.matms; i++) {
+          for (let j = 0; j < this.matms; j++) {
+            this.x[k] = (j + 0.5) * this.sid;
+            this.y[k] = (i + 0.5) * this.sid;
+            k++;
+          }
+        }
+
+        this.mx = 0.0;
+        this.my = 0.0;
+        for (let i = 0; i < this.num; i++) this.gor[i] = 0.0;
+        for (let i = 0; i < this.nub; i++) this.R2[i] = 0.0;
+        for (let i = 0; i < this.nub; i++) this.vac[i] = 0.0;
+        for (let i = 0; i < this.natms; i++) {
+          this.x0[i] = 0.0;
+          this.y0[i] = 0.0;
+          this.vx0[i] = 0.0;
+          this.vy0[i] = 0.0;
+        }
+
+        for (let k = 0; k < this.natms; k++) {
+          this.vx[k] = Math.random() - 0.5;
+          this.vy[k] = Math.random() - 0.5;
+          this.mx += this.vx[k];
+          this.my += this.vy[k];
+        }
+        this.mx /= this.natms;
+        this.my /= this.natms;
+
+        this.kin = 0.0;
+        for (let k = 0; k < this.natms; k++) {
+          this.vx[k] -= this.mx;
+          this.vy[k] -= this.my;
+          this.kin += this.vx[k] * this.vx[k] + this.vy[k] * this.vy[k];
+        }
+
+        this.kin = 0.5 * this.kin;
+        this.tmp = this.kin / (this.bol * this.natms);
+        this.scl = Math.sqrt(this.tem / this.tmp);
+        for (let k = 0; k < this.natms; k++) {
+          this.vx[k] *= this.scl;
+          this.vy[k] *= this.scl;
+        }
+
+        this.Forces();
+      }
+
+      update(xden, xtem) {
+        let fac;
+        this.nstep = 0;
+        this.nav = 0;
+
+        if (xden !== this.den) {
+          fac = Math.sqrt(this.den / xden);
+          this.box *= fac;
+          this.rct = 0.5 * this.box;
+          this.dr = this.rct / this.num;
+          this.alp = 24.0 * (2.0 * Math.pow(this.rct, -12) - Math.pow(this.rct, -6)) / this.rct;
+          this.bet = 4.0 * (Math.pow(this.rct, -12) - Math.pow(this.rct, -6)) + this.alp * this.rct;
+          this.vol *= fac * fac;
+          this.den = xden;
+          for (let i = 0; i < this.natms; i++) {
+            this.x[i] *= fac;
+            this.y[i] *= fac;
+          }
+        }
+        if (xtem !== this.tem) this.tem = xtem;
+      }
+
+      Forces() {
+        this.rct = 0.5 * this.box;
+        this.rc2 = this.rct * this.rct;
+        this.pot = 0.0;
+        this.vir = 0.0;
+
+        for (let i = 0; i < this.natms; i++) {
+          this.fx[i] = 0.0;
+          this.fy[i] = 0.0;
+        }
+
+        for (let i = 0; i < this.natms - 1; i++) {
+          for (let j = i + 1; j < this.natms; j++) {
+            let dx = this.x[j] - this.x[i];
+            let dy = this.y[j] - this.y[i];
+            if (dx > this.rct) dx -= this.box;
+            if (dy > this.rct) dy -= this.box;
+            if (dx < -this.rct) dx += this.box;
+            if (dy < -this.rct) dy += this.box;
+            const rsq = dx * dx + dy * dy;
+
+            if (rsq < this.rc2) {
+              const rrr = Math.sqrt(rsq);
+              const ix = Math.floor(rrr / this.dr);
+              if (this.rdfActive && ix < this.num) this.gor[ix] += 1.0;
+              const rrs = 1.0 / rsq;
+              const rr0 = rrr * rrs;
+              const rr3 = rr0 * rrs;
+              const sg6 = rr3 * rr3;
+              const sg12 = sg6 * sg6;
+              let pairPot = 4.0 * (sg12 - sg6) + this.alp * rrr - this.bet;
+              if (pairPot > 50000.0) pairPot = 50000.0; // Prevent runaway potential energy
+              this.pot += pairPot;
+
+              let gam = 24.0 * rrs * (2.0 * sg12 - sg6) - this.alp * rr0;
+              if (gam > 100000.0) gam = 100000.0;       // Ensure force is clamped safely
+              this.vir -= gam * rsq;
+              this.fx[i] -= gam * dx;
+              this.fy[i] -= gam * dy;
+              this.fx[j] += gam * dx;
+              this.fy[j] += gam * dy;
+            }
+          }
+        }
+      }
+
+      Verlet() {
+        this.nstep++;
+        this.kin = 0.0;
+        for (let k = 0; k < this.natms; k++) {
+          this.vx[k] += this.tst * this.fx[k];
+          this.vy[k] += this.tst * this.fy[k];
+          this.x[k] += this.dtm * this.vx[k];
+          this.y[k] += this.dtm * this.vy[k];
+        }
+
+        this.Forces();
+
+        const maxV = 150.0; // Maximum stable velocity per component
+        for (let k = 0; k < this.natms; k++) {
+          this.vx[k] += this.tst * this.fx[k];
+          this.vy[k] += this.tst * this.fy[k];
+
+          // Clamp runaway velocities from sudden overlap
+          if (this.vx[k] > maxV) this.vx[k] = maxV;
+          else if (this.vx[k] < -maxV) this.vx[k] = -maxV;
+          if (this.vy[k] > maxV) this.vy[k] = maxV;
+          else if (this.vy[k] < -maxV) this.vy[k] = -maxV;
+
+          this.kin += this.vx[k] * this.vx[k] + this.vy[k] * this.vy[k];
+          this.kin += this.vx[k] * this.vx[k] + this.vy[k] * this.vy[k];
+          if (this.msdActive) {
+            this.x0[k] += this.vx[k] * this.dtm;
+            this.y0[k] += this.vy[k] * this.dtm;
+          }
+          if (this.x[k] > this.box) this.x[k] -= this.box;
+          if (this.y[k] > this.box) this.y[k] -= this.box;
+          if (this.x[k] < 0.0) this.x[k] += this.box;
+          if (this.y[k] < 0.0) this.y[k] += this.box;
+        }
+        this.kin *= 0.5;
+        this.tmp = this.kin / (this.bol * this.natms);
+        this.tot = this.kin + this.pot;
+        this.prs = (this.kin - 0.5 * this.vir) / this.vol;
+        this.nav++;
+        this.tmpav += (this.tmp - this.tmpav) / this.nav;
+        this.totav += (this.tot - this.totav) / this.nav;
+        this.prsav += (this.prs - this.prsav) / this.nav;
+
+        if (this.nstep % 10 === 1) {
+          this.mx = 0.0;
+          this.my = 0.0;
+          this.scl = Math.sqrt(this.tem / this.tmp);
+          for (let k = 0; k < this.natms; k++) {
+            this.mx += this.vx[k];
+            this.my += this.vy[k];
+          }
+          this.mx /= this.natms;
+          this.my /= this.natms;
+          for (let k = 0; k < this.natms; k++) {
+            this.vx[k] = this.scl * (this.vx[k] - this.mx);
+            this.vy[k] = this.scl * (this.vy[k] - this.my);
+          }
+        }
+
+        if (this.rdfActive) {
+          this.rdfSamples++;
+          for (let i = 0; i < this.num; i++) {
+            const radius = (i + 0.5) * this.dr;
+            const shellArea = 2 * Math.PI * radius * this.dr;
+            const expected = this.den * ((this.natms - 1) / 2) * shellArea * this.rdfSamples;
+            this.rdfData[i] = expected > 0 ? this.gor[i] / expected : 0;
+          }
+        }
+
+        if (this.msdActive) {
+          this.msdStep++;
+          if (this.msdStep % 10 === 0) {
+            const index = Math.floor(this.msdStep / 10) - 1;
+            if (index < this.nub) {
+              let displacement = 0;
+              for (let k = 0; k < this.natms; k++) {
+                displacement += this.x0[k] * this.x0[k] + this.y0[k] * this.y0[k];
+              }
+              this.msdCurrent[index] = displacement / this.natms;
+            }
+          }
+          if (this.msdStep >= 10 * this.nub) {
+            this.msdStep = 0;
+            this.msdCycles++;
+            for (let i = 0; i < this.nub; i++) {
+              this.msdData[i] += (this.msdCurrent[i] - this.msdData[i]) / this.msdCycles;
+            }
+            this.R2.fill(0);
+            this.msdSamples.fill(0);
+            this.msdCurrent.fill(0);
+            this.x0.fill(0);
+            this.y0.fill(0);
+          }
+        }
+
+        if (this.vacActive) {
+          if (this.vacStep === 0) {
+            this.vx0.set(this.vx);
+            this.vy0.set(this.vy);
+            this.vac.fill(0);
+          }
+          let correlation = 0;
+          for (let k = 0; k < this.natms; k++) {
+            correlation += this.vx0[k] * this.vx[k] + this.vy0[k] * this.vy[k];
+          }
+          this.vac[this.vacStep] = correlation / this.natms;
+          this.vacStep++;
+          if (this.vacStep === this.nub) {
+            this.vacCycles++;
+            const zeroLag = this.vac[0] || 1;
+            for (let i = 0; i < this.nub; i++) {
+              const normalized = this.vac[i] / zeroLag;
+              this.vacData[i] += (normalized - this.vacData[i]) / this.vacCycles;
+              this.vac2[i] = this.vac[i];
+            }
+            this.vacStep = 0;
+          }
+        }
+      }
+
+      render() {
+        ctx.fillStyle = '#102244';
+        ctx.fillRect(0, 0, logicalSize, logicalSize);
+
+        const scale = logicalSize / this.box;
+        const dia = Math.max(2, Math.floor(scale));
+        const radius = dia / 2;
+
+        for (let i = 0; i < this.natms; i++) {
+          const x = this.x[i] * scale;
+          const y = this.y[i] * scale;
+          const isSelected = (this.ident === i);
+
+          const xOffsets = [0];
+          const yOffsets = [0];
+          if (x < radius) xOffsets.push(logicalSize);
+          else if (x > logicalSize - radius) xOffsets.push(-logicalSize);
+          if (y < radius) yOffsets.push(logicalSize);
+          else if (y > logicalSize - radius) yOffsets.push(-logicalSize);
+
+          const fillColor = isSelected ? '#ffff00' : '#ff3030';
+
+          for (const xOff of xOffsets) {
+            for (const yOff of yOffsets) {
+              const px = x + xOff;
+              const py = y + yOff;
+
+              ctx.beginPath();
+              ctx.arc(px, py, radius, 0, Math.PI * 2);
+              ctx.fillStyle = fillColor;
+              ctx.fill();
+            }
+          }
+        }
+      }
+    }
+
+    const sim = new Simulate();
+    const graphWindows = {};
+    const graphSampleVersions = {};
+    let currentOverlayType = null;
+
+    function setControlsEnabled(enabled) {
+      densitySlider.disabled = !enabled;
+      tempSlider.disabled = !enabled;
+      document.getElementById('rdfBtn').disabled = !enabled;
+      document.getElementById('msdBtn').disabled = !enabled;
+      document.getElementById('vacBtn').disabled = !enabled;
+    }
+
+    function isMobileDevice() {
+      let fullWidth = window.innerWidth;
+      try {
+        if (window.top) fullWidth = window.top.innerWidth;
+      } catch (e) {
+        fullWidth = window.screen ? window.screen.width : window.innerWidth;
+      }
+      const screenDim = window.screen ? Math.min(window.screen.width, window.screen.height) : fullWidth;
+      return fullWidth <= 760 || screenDim <= 500;
+    }
+
+    function startGraphSampling(type) {
+      if (type === 'rdf') {
+        sim.rdfActive = true;
+        sim.rdfSamples = 0;
+        sim.gor.fill(0);
+        sim.rdfData.fill(0);
+      } else if (type === 'msd') {
+        sim.msdActive = true;
+        sim.msdStep = 0;
+        sim.msdCycles = 0;
+        sim.msdSamples.fill(0);
+        sim.msdCurrent.fill(0);
+        sim.R2.fill(0);
+        sim.msdData.fill(0);
+        sim.x0.fill(0);
+        sim.y0.fill(0);
+      } else {
+        sim.vacActive = true;
+        sim.vacStep = 0;
+        sim.vacCycles = 0;
+        sim.vacData.fill(0);
+      }
+    }
+
+    function openGraph(type) {
+      if (isMobileDevice() && window.parent && window.parent !== window) {
+        currentOverlayType = type;
+        setControlsEnabled(false);
+        window.parent.postMessage({ action: 'open-graph-overlay', type: type }, '*');
+        startGraphSampling(type);
+        return;
+      }
+
+      let graphWindow = graphWindows[type];
+      if (graphWindow && !graphWindow.closed) {
+        try { graphWindow.focus(); } catch {}
+        return;
+      }
+
+      graphWindow = window.open(`Graph.html?type=${type}`, `democritus-${type}`, 'width=500,height=450,resizable=yes');
+      if (!graphWindow) return;
+
+      graphWindows[type] = graphWindow;
+      setControlsEnabled(false);
+      startGraphSampling(type);
+    }
+
+    document.getElementById('rdfBtn').addEventListener('click', () => openGraph('rdf'));
+    document.getElementById('msdBtn').addEventListener('click', () => openGraph('msd'));
+    document.getElementById('vacBtn').addEventListener('click', () => openGraph('vac'));
+
+    window.addEventListener('message', (event) => {
+      if (event.data === 'graph-closed') {
+        if (currentOverlayType === 'rdf') sim.rdfActive = false;
+        if (currentOverlayType === 'msd') sim.msdActive = false;
+        if (currentOverlayType === 'vac') sim.vacActive = false;
+        currentOverlayType = null;
+        setControlsEnabled(true);
+      }
+    });
+
+    // Native unscaled coordinates for perfect particle clicking
+    canvas.addEventListener('click', (event) => {
+      const rect = canvas.getBoundingClientRect();
+      // rect.width and rect.height reflect the zoom level accurately
+      const mouseX = (event.clientX - rect.left) * (logicalSize / rect.width);
+      const mouseY = (event.clientY - rect.top) * (logicalSize / rect.height);
+
+      const scale = logicalSize / sim.box;
+      const dia = Math.max(2, Math.floor(scale));
+      const radiusSq = (dia / 2) ** 2;
+
+      let clicked = -1;
+      for (let i = 0; i < sim.natms; i++) {
+        const ax = sim.x[i] * scale;
+        const ay = sim.y[i] * scale;
+        const distSq = (ax - mouseX) ** 2 + (ay - mouseY) ** 2;
+        if (distSq < radiusSq) {
+          clicked = i;
+          break;
+        }
+      }
+
+      if (clicked !== -1) {
+        sim.ident = (sim.ident === clicked) ? -1 : clicked;
+      }
+    });
+
+    densitySlider.addEventListener('input', (e) => {
+      const value = Number(e.target.value) / 1000.0;
+      sim.update(value, sim.tem);
+      updateReadouts();
+    });
+
+    tempSlider.addEventListener('input', (e) => {
+      const value = Number(e.target.value);
+      sim.update(sim.den, value);
+      updateReadouts();
+    });
+
+    function updateReadouts() {
+      fieldDen.textContent = String(sim.den.toFixed(3));
+      // Clamp displayed temperature/energy values so display boxes never break
+      fieldTem.textContent = String(Math.min(99999, Math.round(sim.tmpav)));
+      fieldPrs.textContent = String(Math.min(9999, sim.prsav).toFixed(3));
+      fieldTot.textContent = String(Math.min(9999, sim.totav).toFixed(3));
+      densitySlider.value = String(Math.round(sim.den * 1000));
+      tempSlider.value = String(Math.round(sim.tem));
+    }
+
+    let lastSimulationFrame = performance.now();
+
+    function animationLoop() {
+      const now = performance.now();
+      const elapsed = Math.min(now - lastSimulationFrame, 1000);
+      const backgrounded = document.hidden || !document.hasFocus();
+      const stepCount = backgrounded ? Math.max(1, Math.round(elapsed * 0.36)) : 6;
+      lastSimulationFrame = now;
+
+      for (let i = 0; i < stepCount; i++) sim.Verlet();
+      updateReadouts();
+      sim.render();
+
+      if (currentOverlayType) {
+        const samples = currentOverlayType === 'rdf' ? sim.rdfSamples : currentOverlayType === 'msd' ? sim.msdCycles : sim.vacCycles;
+        const data = currentOverlayType === 'rdf' ? sim.rdfData : currentOverlayType === 'msd' ? sim.msdData : sim.vacData;
+        window.parent.postMessage({
+          type: currentOverlayType,
+          values: Array.from(data),
+          binWidth: sim.dr,
+          samples: samples
+        }, '*');
+      }
+
+      for (const [type, graphWindow] of Object.entries(graphWindows)) {
+        let closed = false;
+        try { closed = graphWindow.closed; } catch (error) { closed = true; }
+        if (closed) {
+          delete graphWindows[type];
+          delete graphSampleVersions[type];
+          if (type === 'rdf') sim.rdfActive = false;
+          if (type === 'msd') sim.msdActive = false;
+          if (type === 'vac') sim.vacActive = false;
+          if (Object.keys(graphWindows).length === 0) setControlsEnabled(true);
+          continue;
+        }
+        const samples = type === 'rdf' ? sim.rdfSamples : type === 'msd' ? sim.msdCycles : sim.vacCycles;
+        const sampleVersion = type === 'rdf' ? Math.floor(samples / 10) : samples;
+        if (graphSampleVersions[type] === sampleVersion) continue;
+        graphSampleVersions[type] = sampleVersion;
+        const data = type === 'rdf' ? sim.rdfData : type === 'msd' ? sim.msdData : sim.vacData;
+        try {
+          graphWindow.postMessage({ type, values: Array.from(data), binWidth: sim.dr, samples }, '*');
+        } catch (error) {
+          delete graphWindows[type];
+          delete graphSampleVersions[type];
+          if (type === 'rdf') sim.rdfActive = false;
+          if (type === 'msd') sim.msdActive = false;
+          if (type === 'vac') sim.vacActive = false;
+          if (Object.keys(graphWindows).length === 0) setControlsEnabled(true);
+        }
+      }
+
+      if (backgrounded) {
+        setTimeout(animationLoop, 50);
+      } else {
+        requestAnimationFrame(animationLoop);
+      }
+    }
+
+    updateReadouts();
+    sim.render();
+    requestAnimationFrame(animationLoop);
+  </script>
+</body>
+</html>

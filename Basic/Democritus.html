@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>Democritus</title>
+   <style>
+      :root {
+         --ink: #1a1a24;
+         --accent-blue: #2b52b2;
+         --accent-red: #b20000;
+         --rule: rgba(16, 27, 80, 0.18);
+         --serif-stack: "Georgia", "Palatino Linotype", "Times New Roman", serif;
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body { min-height: 100%; }
+
+      body {
+         margin: 0;
+         padding: 24px;
+         color: var(--ink);
+         background: url("../Textures/iepback.gif") repeat;
+         font-family: var(--serif-stack);
+      }
+
+      .page {
+         width: min(1120px, 100%);
+         margin: 0 auto;
+         padding: 20px 24px 18px;
+         background: transparent;
+      }
+
+      .masthead {
+         display: flex;
+         justify-content: center;
+         padding-bottom: 24px;
+      }
+
+      /* Democritus Brand Header - 3D Plaque */
+      .brand {
+         display: inline-block;
+         margin: 0;
+         padding: 10px clamp(10px, 3vw, 24px);
+         white-space: nowrap;
+         overflow-wrap: normal;
+         word-break: normal;
+         background: #e3e3e3;
+         border-top: 5px solid #ffffff;
+         border-left: 5px solid #dfdfdf;
+         border-right: 5px solid #7a7a7a;
+         border-bottom: 5px solid #4a4a4a;
+         box-shadow:
+            2px 3px 6px rgba(0, 0, 0, 0.28),
+            inset 0 0 0 2px #e3e3e3,
+            inset 1px 1px 0 2px #555555,
+            inset -1px -1px 0 2px #ffffff;
+         color: #08083f;
+         font-family: "Wide Latin", "Times New Roman", serif;
+         font-size: clamp(1rem, 5.5vw, 2rem);
+         line-height: 1.2;
+         text-align: center;
+         letter-spacing: 1px;
+         max-width: 95%;
+      }
+
+      .feature-grid {
+         display: grid;
+         grid-template-columns: 214px minmax(0, 1fr) 214px;
+         gap: 28px;
+         align-items: center;
+         max-width: 940px;
+         margin: 0 auto;
+      }
+
+      .feature {
+         min-width: 0;
+         margin: 0;
+         text-align: center;
+      }
+
+      .feature-image-link {
+         display: flex;
+         width: min(100%, 214px);
+         aspect-ratio: 1;
+         align-items: center;
+         justify-content: center;
+         margin: 0 auto;
+      }
+
+      .portrait img, .atom img {
+         display: block;
+         width: 100%;
+         height: 100%;
+         object-fit: contain;
+      }
+
+      .feature-copy {
+         text-align: center;
+      }
+
+      .tagline {
+         margin: 0 0 10px;
+         color: var(--accent-blue);
+         font-family: var(--serif-stack);
+         font-size: 1.4rem;
+         font-weight: 700;
+         line-height: 1.35;
+         text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+      }
+
+      .greek-band {
+         display: block;
+         width: min(100%, 320px);
+         height: auto;
+         margin: 0 auto 14px;
+      }
+
+      .authors {
+         margin: 0;
+         color: var(--ink);
+         font-family: var(--serif-stack);
+         font-size: 1.15rem;
+         line-height: 1.5;
+         text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+      }
+
+      .authors .byline { margin-bottom: 4px; }
+
+      .feature-caption {
+         display: inline-block;
+         margin-top: 14px;
+         color: var(--accent-red);
+         font-family: var(--serif-stack);
+         font-size: 1.6rem;
+         font-weight: 700;
+         text-decoration: none;
+         text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+         cursor: pointer;
+         transition: color 0.15s ease;
+      }
+
+      .feature-caption:hover {
+         color: #800000;
+         text-decoration: none;
+      }
+
+      a:focus-visible {
+         outline: 3px solid #173f86;
+         outline-offset: 4px;
+      }
+
+      .bottom-nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 2rem auto 1.5rem;
+      }
+      
+      .bottom-nav img {
+        display: block;
+        height: 32px;
+        width: auto;
+      }
+      
+      .heritage-credit {
+        margin: 1.5rem auto 1rem;
+        padding-top: 0.8rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.15);
+        text-align: center;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 0.85rem;
+        color: #33334d;
+        letter-spacing: 0.02em;
+      }
+	  
+      @media (max-width: 760px) {
+         body { padding: 12px; }
+         .page { padding: 16px 14px; }
+         .masthead { padding-bottom: 18px; }
+         .brand {
+            padding: 8px 10px;
+            font-size: clamp(0.85rem, 5vw, 1.45rem);
+            letter-spacing: 0.5px;
+         }
+         .feature-grid {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 20px 14px;
+         }
+         .feature-copy { grid-column: 1 / -1; grid-row: 1; }
+         .portrait { grid-column: 1; grid-row: 2; }
+         .atom { grid-column: 2; grid-row: 2; }
+         .feature-image-link { width: 100%; }
+         .tagline { font-size: 1.2rem; }
+         .authors { font-size: 1rem; }
+         .feature-caption { font-size: 1.35rem; margin-top: 8px; }
+         .bottom-nav { margin-top: 22px; padding-top: 16px; gap: 32px; }
+      }
+
+      @media (max-width: 340px) {
+         body { padding: 8px; }
+         .page { padding: 12px 10px; }
+         .brand {
+            padding: 6px 8px;
+            font-size: clamp(0.75rem, 4.5vw, 1rem);
+            letter-spacing: 0;
+         }
+         .feature-grid { column-gap: 8px; }
+         .feature-caption { font-size: 1.15rem; }
+      }
+   </style>
+</head>
+<body>
+   <main class="page">
+      <header class="masthead">
+         <h1 class="brand">DEMOCRITUS</h1>
+      </header>
+
+      <section class="feature-grid" aria-label="Democritus tutorial">
+         <figure class="feature portrait">
+            <a class="feature-image-link" href="Intro.html">
+               <img src="../Pictures/mydemocritus.jpg" width="150" height="154" alt="Democritus" />
+            </a>
+            <figcaption><a class="feature-caption" href="Intro.html">Theory</a></figcaption>
+         </figure>
+
+         <div class="feature-copy">
+            <p class="tagline">A Molecular Dynamics tutorial</p>
+            <img class="greek-band" src="../Pictures/gr_band.gif" alt="" />
+            <div class="authors">
+               <p class="byline">by:</p>
+               <p>Alex C&ocirc;t&eacute;<br />Bill Smith<br />Phil Lindan</p>
+            </div>
+         </div>
+
+         <figure class="feature atom">
+            <a class="feature-image-link" href="../Experiments/exps.html">
+               <img src="../Pictures/atom-animation.gif" width="214" height="198" alt="Animated atom model" />
+            </a>
+            <figcaption><a class="feature-caption" href="../Experiments/exps.html">Experiments</a></figcaption>
+         </figure>
+      </section>
+
+      <div class="bottom-nav">
+        <a href="Contents.html"><img src="../Icons/contents.gif" alt="Contents"/></a>
+      </div>
+      
+      <footer class="heritage-credit">
+        Originally developed at Daresbury Laboratory (2000) &bull; Re-engineered in HTML5 (2026)
+      </footer>
+   </main>
+</body>
+<!-- Copyright Daresbury Laboratory 2000. Reproduction by permission only. -->
+</html>

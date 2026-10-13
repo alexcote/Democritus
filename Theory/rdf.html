@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../responsive.css" />
+  <title>Democritus: The Radial Distribution Function</title>
+</head>
+<body background="../Textures/iepback.gif">
+
+  <center>
+    <h1 class="brand">DEMOCRITUS</h1>
+  </center>
+
+  <div class="content-wrap">
+    <center>
+      <h2 class="theory-title"><img src="../Icons/BluStar.gif" height="15" alt="*">The Radial Distribution Function<img src="../Icons/BluStar.gif" height="15" alt="*"></h2>
+    </center>
+
+    <p>
+      The radial distribution function (or RDF) is an example of a <strong>pair correlation function</strong>, which describes how, on average, the atoms in a system are radially packed around each other. This proves to be a particularly effective way of describing the average structure of disordered molecular systems such as liquids. Also in systems like liquids, where there is continual movement of the atoms and a single snapshot of the system shows only the instantaneous disorder, it is extremely useful to be able to deal with the average structure.
+    </p>
+
+    <p>
+      The RDF is useful in other ways. For example, it is something that can be deduced experimentally from x-ray or neutron diffraction studies, thus providing a direct comparison between experiment and simulation. It can also be used in conjunction with the interatomic pair potential function to calculate the internal energy of the system, usually quite accurately.
+    </p>
+
+    <center>
+      <img src="../Pictures/rdfdin.gif" alt="Radial distribution shells">
+    </center>
+
+    <p>
+      To construct an RDF is simple. Choose an atom in the system and draw around it a series of concentric spheres, set at a small fixed distance (&Delta;<strong>r</strong>) apart (see figure above). At regular intervals a snapshot of the system is taken and the number of atoms found in each shell is counted and stored. At the end of the simulation, the average number of atoms in each shell is calculated. This is then divided by the volume of each shell and the average density of atoms in the system. The result is the RDF. Mathematically the formula is:
+    </p>
+
+    <center>
+      <p style="font-size: 1.15rem; font-weight: bold; text-align: center; margin: 1.2rem 0;">
+        g(r) = n(r) / (&rho; 4&pi; r<sup>2</sup> &Delta;r)
+      </p>
+    </center>
+
+    <p>
+      In which <strong>g(r)</strong> is the RDF, <strong>n(r)</strong> is the mean number of atoms in a shell of width &Delta;<strong>r</strong> at distance <strong>r</strong>, and &rho; is the mean atom density. The method need not be restricted to one atom. All the atoms in the system can be treated in this way, leading to an improved determination of the RDF as an average over many atoms.
+    </p>
+
+    <p>
+      The RDF is usually plotted as a function of the interatomic separation <strong>r</strong>. A typical RDF plot (below) shows a number of important features. Firstly, at short separations (small <strong>r</strong>) the RDF is zero. This indicates the effective width of the atoms, since they cannot approach any more closely. Secondly, a number of obvious peaks appear, which indicate that the atoms pack around each other in `shells' of neighbours. The occurrence of peaks at long range indicates a high degree of ordering. Usually, at high temperature the peaks are broad, indicating thermal motion, while at low temperature they are sharp. They are particularly sharp in crystalline materials, where atoms are strongly confined in their positions. At very long range every RDF tends to a value of 1, which happens because the RDF describes the average density at this range.
+    </p>
+
+    <center>
+      <img src="../Pictures/rdf.gif" alt="Typical RDF plot">
+    </center>
+
+    <nav class="page-nav">
+      <a href="moldyn3.html"><img src="../Icons/back.gif" border="0" alt="Back"></a>
+      <a href="../Basic/Contents.html"><img src="../Icons/contents.gif" border="0" alt="Contents"></a>
+    </nav>
+  </div>
+
+</body>
+</html>
+<!-- Copyright Daresbury Laboratory 2000. Reproduction by permission only. -->

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../responsive.css" />
+  <title>Democritus: RDF Instructions</title>
+  <style>
+    .instruction-tree {
+      margin: 1.5rem auto;
+      max-width: 580px;
+    }
+    details {
+      margin: 0.75rem 0;
+      cursor: pointer;
+    }
+    summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0b1d5a;
+      outline: none;
+    }
+    summary::-webkit-details-marker {
+      display: none;
+    }
+    summary::before {
+      content: "";
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      background: url("../Icons/fold.gif") no-repeat center;
+      flex-shrink: 0;
+    }
+    details[open] > summary::before {
+      background: url("../Icons/unfold.gif") no-repeat center;
+    }
+    .instruction-body {
+      padding: 0.6rem 0 0.4rem 25px;
+      font-size: 1rem;
+      line-height: 1.55;
+      color: #1a1a24;
+    }
+  </style>
+</head>
+<body background="../Textures/iepback.gif" class="experiment-lesson">
+
+  <center>
+    <h1 class="brand">DEMOCRITUS</h1>
+  </center>
+
+  <div class="content-wrap">
+    <center>
+      <h2 class="theory-title" style="color: #cc0000; font-size: 1.8rem; margin-top: 1rem;">Radial Distribution Function</h2>
+      <h3 style="color: #2b52b2; font-size: 1.25rem; margin: 0.5rem 0 1.2rem;">Instructions</h3>
+    </center>
+
+    <div class="instruction-tree">
+      <details>
+        <summary>Click on the 'RDF' button</summary>
+        <div class="instruction-body">
+          A real-time plot of the radial distribution function will appear. The horizontal axis represents distance i.e. the separation between the atoms, while the vertical axis is the RDF itself. (Note the controls of the MD engine are disabled. They will be re-activated when the RDF window is closed.) At first the function will appear very rough.
+        </div>
+      </details>
+
+      <details>
+        <summary>Leave it for a minimum of 15 minutes to "settle"</summary>
+        <div class="instruction-body">
+          Since the RDF is an average over time, we must let the simulation run for a period to accumulate an accurate picture. The statistical accuracy of the RDF builds up as the simulation proceeds, so the function becomes smoother with time. After a while, the structure settles down and very distinctive peaks appear.
+        </div>
+      </details>
+
+      <details>
+        <summary>Try and account for the shape and size of the peaks</summary>
+        <div class="instruction-body">
+          The peaks describe how the atoms pack around a reference atom. All the dynamic information is "washed out" and we are left with an average "static" structure. The peaks appear at different distances from the reference atom because they form "shells" around it. The position and height of the peaks is a very strong clue to the structure of the system. The RDF in crystalline solids ignores the directional properties of the structure but gives an accurate description of interatomic distances. The width of the peaks for solids and liquids depends on temperature. The peaks for crystals are sharp because crystals generally exist at lower temperatures than liquids. Why do you think the heights of the peaks vary?
+        </div>
+      </details>
+
+      <details>
+        <summary>Try it again with a different temperature and density</summary>
+        <div class="instruction-body">
+          Changing the temperature and / or density will show how the RDF reflects the new structure. You will notice that the peaks will be broader at higher temperatures, and narrower at lower temperatures. Can you explain why? Try simulating a cold, high density system and explain the shape of the RDF you obtain.<br><br>
+          Have you noticed that whatever you do, the RDF is zero at small separations? Can you guess why? (Hint: look at the atoms in the MD Engine, do the centers of the atoms ever coincide?)
+        </div>
+      </details>
+    </div>
+
+    <center style="margin: 2rem 0;">
+      <a class="legacy-action" href="exper4c.html">Find out more</a>
+    </center>
+
+    <div style="display: flex; justify-content: flex-end; margin-top: 2.5rem;">
+      <a href="expintr.html"><img src="../Icons/quit.gif" border="0" alt="Quit to Experiments"></a>
+    </div>
+  </div>
+
+</body>
+</html>
+<!-- Copyright Daresbury Laboratory 2000. Reproduction by permission only. -->

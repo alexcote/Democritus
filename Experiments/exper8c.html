@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../responsive.css" />
+  <title>Democritus: Why does the pressure go negative?</title>
+</head>
+<body background="../Pictures/iepback.gif" class="experiment-lesson">
+
+  <center>
+    <h1 class="brand">DEMOCRITUS</h1>
+  </center>
+
+  <div class="content-wrap">
+    <center>
+      <h2 class="theory-title" style="color: #cc0000; font-size: 1.8rem; margin-top: 1rem;">Pressure and Temperature</h2>
+      <h3 style="color: #2b52b2; font-size: 1.25rem; margin: 0.5rem 0 1.2rem;">Why does the pressure go negative?</h3>
+    </center>
+
+    <p>
+      In a molecular dynamics simulation the pressure is calculated using an equation due to Rudolph Clausius (1822-1888) which has the form:
+    </p>
+
+    <center>
+      <p style="font-weight: 700; margin: 1.2rem 0;">PV = nRT - W/3</p>
+    </center>
+
+    <p>
+      where W is known as the Virial of Clausius, which takes into account the influence of intermolecular forces. For a dilute gas, W is small and we recover the normal Universal Gas Law. However, in the Democritus simulations W is both significant and positive - indicating that attractive forces are present. This means that for a fixed volume and low temperature this term becomes dominant and the pressure becomes negative. In other words, the attractive intermolecular forces overcome the kinetic energy of the system, which implies that the system cannot remain a gas at this volume. Thus you should see that when the pressure becomes negative, colliding atoms tend to stick together.
+    </p>
+
+    <p>
+      In Nature negative pressure does not arise, because the system contracts in volume and the virial reduces in magnitude. This cannot happen in the simulation where the simulation 'box' is fixed in size, so the system must continue in a state of 'negative pressure'.
+    </p>
+
+    <div style="display: flex; justify-content: flex-end; margin-top: 2.5rem;">
+      <a href="expintr.html"><img src="../Icons/quit.gif" border="0" alt="Quit to Experiments"></a>
+    </div>
+  </div>
+
+</body>
+</html>
+<!-- Copyright Daresbury Laboratory 2000. Reproduction by permission only. -->

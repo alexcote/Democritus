@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Graph Window</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; }
+    body { background: #f4f4f4; color: #111; font: 12px Helvetica, Arial, sans-serif; }
+    canvas { display: block; width: 100%; height: 100%; }
+  </style>
+</head>
+<body>
+  <canvas id="graph" aria-label="Live molecular dynamics graph"></canvas>
+  <script>
+    const graphType = new URLSearchParams(location.search).get('type');
+    const graphInfo = {
+      rdf: { title: 'Radial Distribution Function', subtitle: 'g(r) vs. r', x: 'r', y: 'g(r)' },
+      msd: { title: 'Mean Square Displacement', subtitle: 'R² vs. t', x: 't', y: 'R²' },
+      vac: { title: 'Velocity autocorrelation function', subtitle: 'plotted against time', x: 't', y: 'C(t)' }
+    }[graphType];
+    const canvas = document.getElementById('graph');
+    const context = canvas.getContext('2d');
+    let values = [];
+    let binWidth = 0;
+    let samples = 0;
+
+    function draw() {
+      const ratio = window.devicePixelRatio || 1;
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      canvas.width = Math.round(width * ratio);
+      canvas.height = Math.round(height * ratio);
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      context.fillStyle = '#f4f4f4';
+      context.fillRect(0, 0, width, height);
+
+      const left = 62;
+      const right = width - 32;
+      const top = 58;
+      const availableWidth = right - left;
+      const availableHeight = height - top - 56;
+
+      const plotWidth = Math.max(availableWidth, 10);
+      // Clamp plot height so the Y-axis is never longer than the X-axis
+      const plotHeight = Math.max(10, Math.min(availableHeight, plotWidth * 0.85));
+      const bottom = top + plotHeight;
+
+      context.strokeStyle = '#222';
+      context.lineWidth = 1;
+      context.strokeRect(left, top, plotWidth, plotHeight);
+      context.fillStyle = '#111';
+      context.textAlign = 'center';
+      context.font = 'bold 14px Helvetica, Arial, sans-serif';
+      context.fillText(graphInfo.title, width / 2, 22);
+      context.font = 'bold 12px Helvetica, Arial, sans-serif';
+      context.fillText(graphInfo.subtitle, width / 2, 41);
+
+      // X-axis label placed directly under the plot
+      context.font = '12px Helvetica, Arial, sans-serif';
+      context.fillText(graphInfo.x, width - 22, bottom + 18);
+
+      // Y-axis label centered exactly on the Y-axis
+      context.save();
+      context.translate(18, top + plotHeight / 2);
+      context.rotate(-Math.PI / 2);
+      context.fillText(graphInfo.y, 0, 0);
+      context.restore();
+
+      if (!samples || !values.length) {
+        const message = graphType === 'rdf'
+          ? 'Building RDF data'
+          : graphType === 'msd'
+            ? 'Please wait for the MSD to build up'
+            : 'Please wait for the VAC to build up';
+        context.fillStyle = '#244d9b';
+        context.textAlign = 'center';
+        context.font = 'bold 14px Helvetica, Arial, sans-serif';
+        context.fillText(message, left + plotWidth / 2, top + plotHeight / 2);
+        return;
+      }
+
+      const finiteValues = values.filter(Number.isFinite);
+      const minimumY = graphType === 'vac' ? -0.6 : 0;
+      const maximumY = graphType === 'vac' ? 1.1 : Math.max(...finiteValues, 1e-9) * 1.08;
+      const maximumX = graphType === 'rdf'
+        ? values.length * binWidth
+        : values.length * (graphType === 'msd' ? 10 : 1);
+
+      context.strokeStyle = '#ddd';
+      context.fillStyle = '#333';
+      context.font = '10px Helvetica, Arial, sans-serif';
+      context.textAlign = 'right';
+      for (let tick = 0; tick <= 5; tick++) {
+        const y = bottom - plotHeight * tick / 5;
+        const label = minimumY + (maximumY - minimumY) * tick / 5;
+        context.beginPath();
+        context.moveTo(left, y);
+        context.lineTo(right, y);
+        context.stroke();
+        context.fillText(label.toFixed(graphType === 'msd' ? 3 : 1), left - 7, y + 3);
+      }
+
+      context.strokeStyle = 'red';
+      context.lineWidth = 1.5;
+      context.beginPath();
+      let started = false;
+      values.forEach((value, index) => {
+        if (!Number.isFinite(value)) return;
+        const x = left + plotWidth * index / Math.max(1, values.length - 1);
+        const y = bottom - plotHeight * (value - minimumY) / (maximumY - minimumY);
+        if (!started) {
+          context.moveTo(x, y);
+          started = true;
+        } else {
+          context.lineTo(x, y);
+        }
+      });
+      context.stroke();
+
+      context.fillStyle = '#333';
+      context.textAlign = 'center';
+      for (let tick = 0; tick <= 5; tick++) {
+        const x = left + plotWidth * tick / 5;
+        const value = maximumX * tick / 5;
+        context.fillText(graphType === 'rdf' ? value.toFixed(1) : String(Math.round(value)), x, bottom + 18);
+      }
+    }
+
+    window.addEventListener('message', (event) => {
+      if (!event.data || event.data.type !== graphType) return;
+      values = event.data.values;
+      binWidth = event.data.binWidth || 0;
+      samples = event.data.samples || 0;
+      draw();
+    });
+    window.addEventListener('resize', draw);
+    draw();
+  </script>
+</body>
+</html>

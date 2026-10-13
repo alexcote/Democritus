@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../responsive.css" />
+  <title>Democritus: The Mean Squared Displacement and the Velocity Autocorrelation Function</title>
+</head>
+<body background="../Textures/iepback.gif">
+
+  <center>
+    <h1 class="brand">DEMOCRITUS</h1>
+  </center>
+
+  <div class="content-wrap">
+    <center>
+      <h2 class="theory-title"><img src="../Icons/RedStar.gif" height="15" alt="*">The Mean Squared Displacement and the Velocity Autocorrelation Function<img src="../Icons/RedStar.gif" height="15" alt="*"></h2>
+    </center>
+
+    <p>
+      The MSD and the VAF seem to be two very different functions. The MSD is (for the most part) a linear function of time, while the VAF displays a complicated dependence on time. But a little thought will suggest that they must have something in common. Both, in an average sense, describe the motion of a molecule with time and must therefore be related somehow. The mathematical relationship is revealing, as the following shows.
+    </p>
+
+    <p>We can describe the distance r(t) a molecule moves in time as an integral of its velocity v(t):</p>
+    <center>
+      <img src="../Pictures/msdeq1.gif" alt="r(t) velocity integral">
+    </center>
+
+    <p>The square of this distance is thus:</p>
+    <center>
+      <img src="../Pictures/msdeq2.gif" alt="Distance squared integral">
+    </center>
+
+    <p>defining u'=u+s and integrating over u, results in the following form where the ensemble average has also been taken:</p>
+    <center>
+      <img src="../Pictures/msdeq3.gif" alt="Ensemble average integration">
+    </center>
+
+    <p>In this equation &lt;v(0) v(s)&gt; is the velocity autocorrelation function, so the relationship between MSD and VAF is now apparent. This can also be written as:</p>
+    <center>
+      <img src="../Pictures/msdeq4.gif" alt="MSD and VAF explicit formulation">
+    </center>
+
+    <p>
+      What this integral shows is that the MSD is comprised of two parts. The first term on the right includes the time t explicitly and if we assume that when t is large, the VAF decays to zero (as it usually does) then the integral here will have a fixed value. Since the second term also integrates to a fixed value for large t, we can see that this equation is equivalent to Einstein's, provided we assume that:
+    </p>
+
+    <center>
+      <img src="../Pictures/msdeq5.gif" alt="Diffusion constant relation 1">
+      <br><br>
+      <img src="../Pictures/msdeq6.gif" alt="Diffusion constant relation 2">
+    </center>
+
+    <p>
+      when t is large. This is a very important result, as it shows how the diffusion coefficient can be obtained from both the VAF and the MSD!
+    </p>
+
+    <p>
+      Another thing we can see is that when t is small, the time dependence of the VAF cannot be ignored (it is no longer constant). So from the above integral, it follows that the MSD must depend on the behaviour of the VAF at short time. This means the short time behaviour of the MSD cannot be linear. Thus we learn that molecular motion only becomes a random walk after the velocity autocorrelation function becomes zero i.e. the molecules have `forgotten' what speed and direction they began with at t=0.
+    </p>
+
+    <nav class="page-nav">
+      <a href="msd.html"><img src="../Icons/back.gif" border="0" alt="Back"></a>
+      <a href="../Basic/Contents.html"><img src="../Icons/contents.gif" border="0" alt="Contents"></a>
+    </nav>
+  </div>
+
+</body>
+</html>
+<!-- Copyright Daresbury Laboratory 2000. Reproduction by permission only. -->

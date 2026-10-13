@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../responsive.css" />
+  <title>Democritus: Pressure and Density Instructions</title>
+  <style>
+    .instruction-tree {
+      margin: 1.5rem auto;
+      max-width: 580px;
+    }
+    details {
+      margin: 0.75rem 0;
+      cursor: pointer;
+    }
+    summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0b1d5a;
+      outline: none;
+    }
+    summary::-webkit-details-marker {
+      display: none;
+    }
+    summary::before {
+      content: "";
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      background: url("../Icons/fold.gif") no-repeat center;
+      flex-shrink: 0;
+    }
+    details[open] > summary::before {
+      background: url("../Icons/unfold.gif") no-repeat center;
+    }
+    .instruction-body {
+      padding: 0.6rem 0 0.4rem 25px;
+      font-size: 1rem;
+      line-height: 1.55;
+      color: #1a1a24;
+    }
+  </style>
+</head>
+<body background="../Textures/iepback.gif" class="experiment-lesson">
+
+  <center>
+    <h1 class="brand">DEMOCRITUS</h1>
+  </center>
+
+  <div class="content-wrap">
+    <center>
+      <h2 class="theory-title" style="color: #cc0000; font-size: 1.8rem; margin-top: 1rem;">Pressure and Density</h2>
+      <h3 style="color: #2b52b2; font-size: 1.25rem; margin: 0.5rem 0 1.2rem;">Instructions</h3>
+    </center>
+
+    <div class="instruction-tree">
+      <details>
+        <summary>Move the density slider as low as you can; keep the temperature in the middle.</summary>
+        <div class="instruction-body">
+          Decreasing the density is done by increasing the simulation volume. This is represented in the MD engine by shrinking the relative size of the atoms, but you must think of this as viewing the bigger volume from a greater distance with the atoms retaining their original size.
+        </div>
+      </details>
+
+      <details>
+        <summary>Leave it for a few minutes until the pressure stays reasonably constant.</summary>
+        <div class="instruction-body">
+          The pressure is computed as a "rolling average", which is an average over time taken from the start of the experiment. So as time passes it will converge to the true average value. You want a converged value in order to keep the errors of your measurements to a minimum. Make a note of the pressure and the density.
+        </div>
+      </details>
+
+      <details>
+        <summary>Increase the density a little, wait, and take another measurement.</summary>
+        <div class="instruction-body">
+          By increasing the density you are decreasing the volume, (with the temperature being kept constant). Can you see what is happening to the pressure?
+        </div>
+      </details>
+
+      <details>
+        <summary>Repeat the above, steadily increasing the density up to maximum.</summary>
+        <div class="instruction-body">
+          You should collect a set of data measuring pressure against density. Try to get at least 7 or 8 points.
+        </div>
+      </details>
+
+      <details>
+        <summary>Draw a plot of pressure against density.</summary>
+        <div class="instruction-body">
+          According to Boyle's law this plot should be a straight line. Is this what you see? Remember Boyle's law applies to gases which have very low densities and therefore the forces between molecules are very weak. This is not the case in most of this plot, particularly when the atoms are packed closely together. Temperature also has an important effect as can be seen if this experiment is repeated at a higher temperature.<br><br>
+          <em>Beware of using too low a temperature because the molecules will aggregate (i.e. condense) and no longer fully explore the experimental volume (at least not in a reasonable time!). Thus the true reading of pressure cannot be obtained.</em>
+        </div>
+      </details>
+    </div>
+
+    <center style="margin: 2rem 0;">
+      <a class="legacy-action" href="exper7c.html">Find out more</a>
+    </center>
+
+    <div style="display: flex; justify-content: flex-end; margin-top: 2.5rem;">
+      <a href="expintr.html"><img src="../Icons/quit.gif" border="0" alt="Quit to Experiments"></a>
+    </div>
+  </div>
+
+</body>
+</html>
+<!-- Copyright Daresbury Laboratory 2000. Reproduction by permission only. -->

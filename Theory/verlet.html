@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../responsive.css" />
+  <title>Democritus: Integration Algorithms</title>
+</head>
+<body background="../Textures/iepback.gif">
+
+  <center>
+    <h1 class="brand">DEMOCRITUS</h1>
+  </center>
+
+  <div class="content-wrap">
+    <center>
+      <h2 class="theory-title"><img src="../Icons/GreStar.gif" height="15" alt="*">Integration Algorithms<img src="../Icons/GreStar.gif" height="15" alt="*"></h2>
+    </center>
+
+    <p>
+      The molecular dynamics method solves Newton's equations of motion for atoms by taking a small step in time and using approximate numerical methods to predict the new atom positions and velocities at the end of the step. At the new positions, the atomic forces are re-calculated and another step in time is made. This procedure is repeated many thousands of times in a typical simulation.
+    </p>
+
+    <p>
+      The approximate numerical method used to advance the system by one time step is known as an integration algorithm. Many integration algorithms have been devised to satisfy the fundamental requirements of:
+    </p>
+
+    <ul>
+      <li>Accuracy - does it give an accurate description of the atomic motion?</li>
+      <li>Stability - does it conserve the system energy and temperature?</li>
+      <li>Simplicity - is it easy to write a computer program for it?</li>
+      <li>Speed - does it calculate the atomic motion as quickly as possible?</li>
+      <li>Economy - does it use a minimum of computing resources e.g. memory.</li>
+    </ul>
+
+    <p>
+      The most popular group of integration algorithms among molecular dynamics programmers are the <strong>Verlet</strong> algorithms, which possess all the above advantages. There are three forms, which differ slightly in their usefulness, but are of equivalent accuracy and stability:
+    </p>
+
+    <ul>
+      <li><a href="#verlet">The basic Verlet algorithm</a>;</li>
+      <li><a href="#leapfrog">The Verlet leapfrog algorithm</a>;</li>
+      <li><a href="#velver">The velocity Verlet algorithm</a>.</li>
+    </ul>
+
+    <p>
+      The molecular dynamics program <strong>Democritus</strong> is based on the velocity Verlet algorithm.
+    </p>
+
+    <hr style="border: 0; border-top: 1px solid rgba(0, 0, 0, 0.2); margin: 2rem 0;">
+
+    <center>
+      <h2 id="verlet" class="theory-title"><img src="../Icons/BluStar.gif" height="15" alt="*">The Basic Verlet Algorithm<img src="../Icons/BluStar.gif" height="15" alt="*"></h2>
+    </center>
+
+    <p>
+      The Verlet algorithm is one of the simplest of all integration algorithms, and was devised by L. Verlet in the early days of molecular simulation. It's simplicity and robustness made it the most popular algorithm for many years, though it is now superseded by its derivatives.
+    </p>
+
+    <p>The equations of the algorithm are as follows.</p>
+
+    <center>
+      <img src="../Pictures/verlet.jpg" alt="Basic Verlet equations">
+    </center>
+
+    <p>
+      What do these equations mean? Well, assume we are at some point in the middle of a simulation - at a time step numbered <strong>n</strong>. At the start of this time step, we will know the positions of the atoms <strong>r<sub>n</sub></strong>, and their corresponding positions at the previous time step <strong>r<sub>n-1</sub></strong>. The first thing we must do is calculate the forces (<strong>f<sub>n</sub></strong>) acting on the atoms. We can then combine this information into the first equation, together with a suitable choice of time interval (&Delta;t), and calculate the atom positions at the <strong>n+1</strong>th time step. (This equation is accurate to an order given by the fourth power of the time interval - which is indicated by the final term on the right of this equation.) Once we know the positions <strong>r<sub>n+1</sub></strong> we can calculate the velocity (<strong>v<sub>n</sub></strong>) of each atom at time step <strong>n</strong> using the second equation, which is accurate to the second power of the time interval. When this is done we are ready to begin the next time step. Providing the time interval (&Delta;t) is small enough, this procedure is good enough to reveal all the interesting properties of the system!
+    </p>
+
+    <p>
+      Despite the simplicity of this algorithm, some aspects are unsatisfactory. Most obviously, the atom positions are given for the <strong>n+1</strong>th time step, while the velocities are given for the time step <strong>n</strong>, i.e. one time step behind. Also, it is apparent that we must store atom positions for three consecutive time steps if we wish to calculate the velocities as well. It is possible to derive variants of the Verlet algorithm which are free from these minor inconveniences.
+    </p>
+
+    <hr style="border: 0; border-top: 1px solid rgba(0, 0, 0, 0.2); margin: 2rem 0;">
+
+    <center>
+      <h2 id="leapfrog" class="theory-title"><img src="../Icons/BluStar.gif" height="15" alt="*">The Verlet Leapfrog Algorithm<img src="../Icons/BluStar.gif" height="15" alt="*"></h2>
+    </center>
+
+    <p>
+      The Verlet leapfrog algorithm is an economical version of the basic algorithm, in that it needs to store only one set of positions and one set of velocities for the atoms, and is even simpler to program.
+    </p>
+
+    <p>The equations defining this algorithm are as follows:</p>
+
+    <center>
+      <img src="../Pictures/leapfrog.jpg" alt="Verlet Leapfrog equations">
+    </center>
+
+    <p>
+      The algorithm defines velocities that are half a time step behind, or in front of, the current time step <strong>n</strong>. When the forces <strong>f<sub>n</sub></strong> of the current time step have been calculated, they are used in the first equation to advance the velocities from the half step behind <strong>n</strong> to the half step ahead. (In so doing the velocities can be seen to "leapfrog" over the current time step <strong>n</strong>, which is the origin of the algorithm's name.) When the atom velocities have been advanced, the positions can be updated using the second equation.
+    </p>
+
+    <p>
+      Throughout the computation of the atomic motion, the algorithm works with the half-step velocities. If the full-step velocities are required, the third equation may be used to obtain them. It is often adequate to work with the half-step velocities however.
+    </p>
+
+    <hr style="border: 0; border-top: 1px solid rgba(0, 0, 0, 0.2); margin: 2rem 0;">
+
+    <center>
+      <h2 id="velver" class="theory-title"><img src="../Icons/BluStar.gif" height="15" alt="*">The Velocity Verlet Algorithm<img src="../Icons/BluStar.gif" height="15" alt="*"></h2>
+    </center>
+
+    <p>
+      The velocity Verlet algorithm provides both the atomic positions and velocities at the same instant of time, and for this reason may be regarded as the most complete form of Verlet algorithm. The basic equations are as follows:
+    </p>
+
+    <center>
+      <img src="../Pictures/velver.jpg" alt="Velocity Verlet equations">
+    </center>
+
+    <p>In practice these two equations are split further into three:</p>
+
+    <center>
+      <img src="../Pictures/velver2.jpg" alt="Velocity Verlet split step equations">
+    </center>
+
+    <p>
+      In this form the first equation (a) calculates a <strong>half-step</strong> velocity, using the force and velocity from time step <strong>n</strong>. This is sufficient to permit calculation of the atom positions at time step <strong>n+1</strong>, using equation (b). Finally, using the forces calculated from the new atomic position <strong>r<sub>n+1</sub></strong>, the half-step velocity is updated to the full step velocity <strong>v<sub>n+1</sub></strong> (c). The advantage of this form of the velocity Verlet algorithm is that it requires less computer memory, because only one set of positions, forces and velocities need to be carried at any one time. This convenience is not apparent in the original equations.
+    </p>
+
+    <nav class="page-nav">
+      <a href="eqnmotion.html"><img src="../Icons/back.gif" border="0" alt="Back"></a>
+      <a href="../Basic/Contents.html"><img src="../Icons/contents.gif" border="0" alt="Contents"></a>
+    </nav>
+  </div>
+
+</body>
+</html>
+<!-- Copyright Daresbury Laboratory 2000. Reproduction by permission only. -->

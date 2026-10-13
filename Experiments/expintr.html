@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../responsive.css" />
+  <title>Democritus: Experiments</title>
+  <style>
+    /* Exact button grid geometry and sizing */
+    .experiment-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 210px));
+      justify-content: center;
+      gap: 22px 28px;
+      margin: 0 auto;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .experiment-button {
+      display: flex;
+      min-height: 50px;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      border: 3px outset #d8d8e6;
+      background: linear-gradient(#f5f5fa, #b8bed2);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
+      color: #111b53;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .experiment-button:hover,
+    .experiment-button:focus-visible {
+      background: linear-gradient(#fff, #d4ddf3);
+      outline: 2px solid #173f86;
+      outline-offset: 2px;
+    }
+
+    .bottom-links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 34px;
+      margin: 26px auto 0;
+    }
+
+    .bottom-links img {
+      display: block;
+      height: 32px;
+      width: auto;
+    }
+	
+	@media screen and (min-width: 1600px) {
+      .experiment-buttons {
+        max-width: 620px;
+        grid-template-columns: repeat(2, minmax(0, 270px));
+        gap: 26px 34px;
+      }
+
+      .experiment-button {
+        min-height: 58px;
+        font-size: 1.15rem;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .experiment-buttons {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .experiment-button {
+        min-height: 42px;
+        padding: 6px 8px;
+        font-size: 0.9rem;
+      }
+      .bottom-links {
+        gap: 24px;
+        margin-top: 16px;
+      }
+      .bottom-links img {
+        height: 26px;
+      }
+    }
+  </style>
+</head>
+<body background="../Pictures/iepback.gif" class="experiment-lesson">
+
+  <center>
+    <h1 class="brand">DEMOCRITUS</h1>
+  </center>
+
+  <div class="content-wrap">
+    <center>
+      <h2 class="theory-title" style="color: #cc0000; font-size: 1.8rem; margin-top: 1rem; margin-bottom: 1.4rem;">Experiments</h2>
+    </center>
+
+    <nav class="experiment-buttons" aria-label="Experiments">
+      <a class="experiment-button" href="exper1a.html" target="text">Temperature</a>
+      <a class="experiment-button" href="exper2a.html" target="text">Crystal</a>
+      <a class="experiment-button" href="exper3a.html" target="text">LDE</a>
+      <a class="experiment-button" href="exper4a.html" target="text">RDF</a>
+      <a class="experiment-button" href="exper5a.html" target="text">MSD</a>
+      <a class="experiment-button" href="exper6a.html" target="text">VAC</a>
+      <a class="experiment-button" href="exper7a.html" target="text">Pressure &amp; Density</a>
+      <a class="experiment-button" href="exper8a.html" target="text">Pressure &amp; Temperature</a>
+    </nav>
+
+    <div class="bottom-links">
+      <a href="../Basic/Democritus.html" target="_top"><img src="../Icons/back.gif" alt="Back" /></a>
+      <a href="../Basic/Contents.html" target="_top"><img src="../Icons/contents.gif" alt="Contents" /></a>
+    </div>
+  </div>
+
+  <script>
+    function announceIntro() {
+      try {
+        if (window.parent && window.parent !== window) {
+          setTimeout(() => {
+            window.parent.postMessage('show-desc', '*');
+          }, 50);
+        }
+      } catch (e) {}
+    }
+
+    announceIntro();
+    window.addEventListener('pageshow', announceIntro);
+  </script>
+</body>
+</html>
