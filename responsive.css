@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Wide Latin Local";
+  src: url("Fonts/Wide-Latin.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 html.experiment-shell-root,
 body.experiment-shell {
   margin: 0;
@@ -273,7 +281,7 @@ body.experiment-shell {
 
    /* Typography: fluid font-size that scales smoothly with container width */
    color: #08083f;
-   font-family: "Wide Latin", "Times New Roman", serif;
+   font-family: "Wide Latin", "Wide Latin Local", "Goblin One", serif;
    font-size: clamp(1rem, 5.5vw, 2rem);
    line-height: 1.2;
    text-align: center;

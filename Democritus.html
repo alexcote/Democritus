@@ -5,6 +5,14 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    <title>Democritus</title>
    <style>
+      @font-face {
+         font-family: "Wide Latin Local";
+         src: url("Fonts/Wide-Latin.ttf") format("truetype");
+         font-weight: normal;
+         font-style: normal;
+         font-display: swap;
+      }
+
       :root {
          --ink: #1a1a24;
          --accent-blue: #2b52b2;
@@ -57,7 +65,7 @@
             inset 1px 1px 0 2px #555555,
             inset -1px -1px 0 2px #ffffff;
          color: #08083f;
-         font-family: "Wide Latin", "Times New Roman", serif;
+         font-family: "Wide Latin", "Wide Latin Local", "Goblin One", serif;
          font-size: clamp(1rem, 5.5vw, 2rem);
          line-height: 1.2;
          text-align: center;
