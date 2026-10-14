@@ -314,6 +314,8 @@
     canvas.height = 320 * dpr;
     ctx.scale(dpr, dpr);
     const logicalSize = 320;
+	
+	const graphChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('democritus_data') : null;
 
     class Simulate {
       constructor() {
@@ -763,24 +765,43 @@
       }
     }
 
+    function isOverlayTargetAvailable() {
+      return window.parent && window.parent !== window;
+    }
+    
     function openGraph(type) {
-      if (isMobileDevice() && window.parent && window.parent !== window) {
+      // If we are embedded in exps.html (mobile or desktop), always prefer the built-in overlay
+      if (isOverlayTargetAvailable() && (isMobileDevice() || !window.open)) {
         currentOverlayType = type;
         setControlsEnabled(false);
         window.parent.postMessage({ action: 'open-graph-overlay', type: type }, '*');
         startGraphSampling(type);
         return;
       }
-
+    
       let graphWindow = graphWindows[type];
       if (graphWindow && !graphWindow.closed) {
         try { graphWindow.focus(); } catch {}
         return;
       }
-
-      graphWindow = window.open(`Graph.html?type=${type}`, `democritus-${type}`, 'width=500,height=450,resizable=yes');
-      if (!graphWindow) return;
-
+    
+      try {
+        graphWindow = window.open(`Graph.html?type=${type}`, `democritus-${type}`, 'width=500,height=450,resizable=yes');
+      } catch (e) {
+        graphWindow = null;
+      }
+    
+      // Crucial PWA fallback: If Android blocked the popup window, switch immediately to the overlay!
+      if (!graphWindow) {
+        if (isOverlayTargetAvailable()) {
+          currentOverlayType = type;
+          setControlsEnabled(false);
+          window.parent.postMessage({ action: 'open-graph-overlay', type: type }, '*');
+          startGraphSampling(type);
+        }
+        return;
+      }
+    
       graphWindows[type] = graphWindow;
       setControlsEnabled(false);
       startGraphSampling(type);
@@ -862,15 +883,27 @@
       updateReadouts();
       sim.render();
 
-      if (currentOverlayType) {
-        const samples = currentOverlayType === 'rdf' ? sim.rdfSamples : currentOverlayType === 'msd' ? sim.msdCycles : sim.vacCycles;
-        const data = currentOverlayType === 'rdf' ? sim.rdfData : currentOverlayType === 'msd' ? sim.msdData : sim.vacData;
-        window.parent.postMessage({
-          type: currentOverlayType,
+      const activeGraphType = currentOverlayType || (Object.keys(graphWindows).length > 0 ? Object.keys(graphWindows)[0] : null);
+
+      if (activeGraphType) {
+        const samples = activeGraphType === 'rdf' ? sim.rdfSamples : activeGraphType === 'msd' ? sim.msdCycles : sim.vacCycles;
+        const data = activeGraphType === 'rdf' ? sim.rdfData : activeGraphType === 'msd' ? sim.msdData : sim.vacData;
+        const payload = {
+          type: activeGraphType,
           values: Array.from(data),
           binWidth: sim.dr,
           samples: samples
-        }, '*');
+        };
+
+        // 1. Broadcast directly to any listening Graph.html (overlay, popup, or iframe)
+        if (graphChannel) {
+          graphChannel.postMessage(payload);
+        }
+
+        // 2. Keep the parent postMessage for backward compatibility
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage(payload, '*');
+        }
       }
 
       for (const [type, graphWindow] of Object.entries(graphWindows)) {

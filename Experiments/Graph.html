@@ -128,13 +128,22 @@
       }
     }
 
-    window.addEventListener('message', (event) => {
-      if (!event.data || event.data.type !== graphType) return;
-      values = event.data.values;
-      binWidth = event.data.binWidth || 0;
-      samples = event.data.samples || 0;
+    function handleIncomingData(data) {
+      if (!data || data.type !== graphType) return;
+      values = data.values;
+      binWidth = data.binWidth || 0;
+      samples = data.samples || 0;
       draw();
-    });
+    }
+
+    // Direct channel from MD.html (solves PWA iframe and popup isolation)
+    if ('BroadcastChannel' in window) {
+      const graphChannel = new BroadcastChannel('democritus_data');
+      graphChannel.onmessage = (event) => handleIncomingData(event.data);
+    }
+
+    // Fallback message listener
+    window.addEventListener('message', (event) => handleIncomingData(event.data));
     window.addEventListener('resize', draw);
     draw();
   </script>

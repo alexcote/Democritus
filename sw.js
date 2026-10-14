@@ -13,7 +13,9 @@ const ASSETS_TO_CACHE = [
   './Pictures/mydemocritus.jpg',
   './Pictures/atom-animation.gif',
   './Pictures/gr_band.gif',
-  './Font/Wide-Latin.ttf'
+  './Font/Wide-Latin.ttf',
+  './Experiments/Graph.html',
+  './Experiments/MD.html'
 ];
 
 self.addEventListener('install', (event) => {
