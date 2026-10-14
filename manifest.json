@@ -15,13 +15,13 @@
       "src": "Icons/demicon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-	  "purpose": "any"
+	    "purpose": "any"
     },
     {
       "src": "Icons/demicon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-	  "purpose": "any"
+	    "purpose": "any"
     },
     {
       "src": "Icons/demicon-512.png",
