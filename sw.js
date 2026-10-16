@@ -1,8 +1,9 @@
-const CACHE_NAME = 'democritus-v1';
+const CACHE_NAME = 'democritus-v2';
 
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
+  './apple-touch-icon.png',
   './manifest.json',
   './responsive.css',
   './Textures/iepback.gif',
