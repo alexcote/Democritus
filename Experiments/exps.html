@@ -87,10 +87,41 @@
     const closeGraphBtn = document.getElementById('closeGraphBtn');
     let isInitialLoad = true;
 
+    // Load lesson from query string (?lesson=exper1a.html)
+    const urlParams = new URLSearchParams(window.location.search);
+    const lessonPage = urlParams.get('lesson');
+    if (lessonPage) {
+      textFrame.src = lessonPage;
+    }
+
     // Handle open/close overlay requests and message relays
+    let lastSetHeight = 0;
+
+    function checkIsPortrait() {
+      return window.matchMedia('(orientation: portrait)').matches || (window.innerHeight > window.innerWidth);
+    }
+
+
     window.addEventListener('message', (event) => {
       const data = event.data;
       if (!data) return;
+
+      if (data.action === 'resize-md-frame' && data.height) {
+        // Only apply explicit pixel height in portrait / stacked mode
+        if (checkIsPortrait()) {
+          // Avoid triggering layout updates for negligible pixel fluctuations
+          if (Math.abs(lastSetHeight - data.height) > 3) {
+            lastSetHeight = data.height;
+            mdFrame.style.height = `${data.height}px`;
+          }
+        } else {
+          // In landscape/desktop, reset inline height so CSS rules control it cleanly
+          if (mdFrame.style.height !== '') {
+            mdFrame.style.height = '';
+            lastSetHeight = 0;
+          }
+        }
+      }
 
       if (data.action === 'open-graph-overlay') {
         graphFrame.src = `Graph.html?type=${data.type}`;
@@ -104,6 +135,14 @@
         if (mdFrame && mdFrame.contentWindow) {
           mdFrame.contentWindow.postMessage(data, '*');
         }
+      }
+    });
+
+    // Reset inline height as soon as the screen is turned to landscape
+    window.addEventListener('resize', () => {
+      if (!checkIsPortrait() && mdFrame.style.height !== '') {
+        mdFrame.style.height = '';
+        lastSetHeight = 0;
       }
     });
 
