@@ -54,5 +54,11 @@ This updated edition faithfully revives the original simulation engine for moder
 
 ## Attribution & Heritage
 
-- **Original Concept & Simulation**: Daresbury Laboratory (2000)
-- **Modern Web Architecture & Restoration**: Converted to native web standards while preserving the pedagogical design and scientific fidelity of the original software.
+* **Original Democritus Project (2000):** Developed at Daresbury Laboratory (CCLRC / STFC) by Alex Côté, Bill Smith and Phil Lindan.
+* **Modern HTML5 & PWA Edition (2026):** Re-engineered and maintained by Alex Côté.
+
+### License
+
+* **Code:** The modern HTML5, CSS, and native JavaScript simulation engine is licensed under the [MIT License](LICENSE).
+* **Educational & Theoretical Content:** The original explanatory texts and pedagogical materials are preserved for educational and non-commercial classroom use under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
+* Original project materials &copy; 2000 Daresbury Laboratory / CCLRC.
