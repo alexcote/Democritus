@@ -324,6 +324,18 @@
 
     window.addEventListener('resize', updateAppletScale);
     updateAppletScale();
+	
+	if ('ResizeObserver' in window) {
+      let resizeTimer = null;
+      const resizeObserver = new ResizeObserver(() => {
+        // Debounce slightly to prevent recursive loop warnings during scaling
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          updateAppletScale();
+        }, 16);
+      });
+      resizeObserver.observe(scaler);
+    }
 
     if (new URLSearchParams(window.location.search).get('desc') === '1') {
       document.body.classList.add('show-desc');
@@ -334,9 +346,15 @@
         lastReportedHeight = 0;
         updateAppletScale();
       } else if (event.data === 'hide-desc') {
-        document.body.classList.remove('show-desc');
+        if (document.body.classList.contains('show-desc')) {
+          document.body.classList.remove('show-desc');
+          updateAppletScale();
+        }
       } else if (event.data === 'show-desc') {
-        document.body.classList.add('show-desc');
+        if (!document.body.classList.contains('show-desc')) {
+          document.body.classList.add('show-desc');
+          updateAppletScale();
+        }
       }
     });
 
@@ -346,7 +364,14 @@
           const loc = window.parent.frames['text'].location;
           const path = loc.pathname || loc.href || '';
           if (path.length > 0) {
-            document.body.classList.toggle('show-desc', path.endsWith('expintr.html'));
+            const shouldShow = path.endsWith('expintr.html');
+            const currentlyShowing = document.body.classList.contains('show-desc');
+            
+            if (shouldShow !== currentlyShowing) {
+              document.body.classList.toggle('show-desc', shouldShow);
+              // Force layout refresh and re-measure height
+              updateAppletScale();
+            }
           }
         }
       } catch (e) {}
