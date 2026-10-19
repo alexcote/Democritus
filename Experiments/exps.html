@@ -138,13 +138,23 @@
       }
     });
 
-    // Reset inline height as soon as the screen is turned to landscape
-    window.addEventListener('resize', () => {
-      if (!checkIsPortrait() && mdFrame.style.height !== '') {
-        mdFrame.style.height = '';
+    function handleLayoutChange() {
+      if (!checkIsPortrait()) {
+        if (mdFrame.style.height !== '') {
+          mdFrame.style.height = '';
+          lastSetHeight = 0;
+        }
+      } else {
+        // Returning to portrait: reset lastSetHeight and request an immediate recalculation
         lastSetHeight = 0;
+        if (mdFrame && mdFrame.contentWindow) {
+          mdFrame.contentWindow.postMessage('trigger-resize', '*');
+        }
       }
-    });
+    }
+
+    window.addEventListener('resize', handleLayoutChange);
+    window.addEventListener('orientationchange', handleLayoutChange);
 
     closeGraphBtn.addEventListener('click', () => {
       graphOverlay.classList.remove('active');
