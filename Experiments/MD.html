@@ -295,6 +295,9 @@
     }
 
     window.addEventListener('resize', updateAppletScale);
+    window.addEventListener('load', () => requestAnimationFrame(updateAppletScale));
+    window.addEventListener('pageshow', () => requestAnimationFrame(updateAppletScale));
+    requestAnimationFrame(updateAppletScale);
     updateAppletScale();
 
     function updateAppletScale() {
@@ -310,7 +313,6 @@
       const viewHeight = document.documentElement.clientHeight || window.innerHeight;
       const isLandscape = !isDevicePortrait && viewHeight < 600;
 
-      document.body.classList.toggle('is-landscape', isLandscape);
       document.body.classList.toggle('is-portrait', isDevicePortrait);
       document.body.classList.toggle('is-landscape', isLandscape);
 
@@ -354,15 +356,15 @@
       }
     }
 	
-	if ('ResizeObserver' in window) {
+    if ('ResizeObserver' in window) {
       let resizeTimer = null;
       const resizeObserver = new ResizeObserver(() => {
-        // Debounce slightly to prevent recursive loop warnings during scaling
         if (resizeTimer) clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
           updateAppletScale();
         }, 16);
       });
+      resizeObserver.observe(document.documentElement);
       resizeObserver.observe(scaler);
     }
 

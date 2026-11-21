@@ -138,6 +138,12 @@
       }
     });
 
+    function triggerMdResize() {
+      if (mdFrame && mdFrame.contentWindow) {
+        mdFrame.contentWindow.postMessage('trigger-resize', '*');
+      }
+    }
+
     function handleLayoutChange() {
       if (!checkIsPortrait()) {
         if (mdFrame.style.height !== '') {
@@ -145,14 +151,13 @@
           lastSetHeight = 0;
         }
       } else {
-        // Returning to portrait: reset lastSetHeight and request an immediate recalculation
         lastSetHeight = 0;
-        if (mdFrame && mdFrame.contentWindow) {
-          mdFrame.contentWindow.postMessage('trigger-resize', '*');
-        }
       }
+      requestAnimationFrame(triggerMdResize);
     }
 
+    window.addEventListener('load', handleLayoutChange);
+    mdFrame.addEventListener('load', () => requestAnimationFrame(triggerMdResize));
     window.addEventListener('resize', handleLayoutChange);
     window.addEventListener('orientationchange', handleLayoutChange);
 
