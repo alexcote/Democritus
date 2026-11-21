@@ -86,6 +86,41 @@
         height: 26px;
       }
     }
+
+    /* Mobile landscape: shrink buttons proportionally to fit all rows on screen */
+    @media screen and (orientation: landscape) and (max-height: 600px) {
+      .content-wrap {
+        padding-bottom: 0.5rem;
+      }
+
+      .content-wrap .theory-title {
+        font-size: 1.35rem !important;
+        margin-top: 0.35rem !important;
+        margin-bottom: 0.5rem !important;
+      }
+
+      .experiment-buttons {
+        grid-template-columns: repeat(2, minmax(0, 175px));
+        gap: 6px 14px;
+      }
+
+      .experiment-button {
+        min-height: 30px;
+        padding: 4px 8px;
+        border-width: 2px;
+        font-size: 0.78rem;
+        line-height: 1.15;
+      }
+
+      .bottom-links {
+        gap: 24px;
+        margin-top: 22px;
+      }
+
+      .bottom-links img {
+        height: 22px;
+      }
+    }
   </style>
 </head>
 <body background="../Pictures/iepback.gif" class="experiment-lesson">

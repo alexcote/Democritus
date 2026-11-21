@@ -275,18 +275,19 @@ button, input[type="range"], a {
 @media screen and (orientation: landscape) and (max-height: 600px) {
   html.experiment-shell-root,
   body.experiment-shell {
-    overflow-y: auto !important; /* Overrides overflow: hidden on the shell */
-    height: auto !important;
+    overflow: hidden !important;
+    height: 100dvh !important;
   }
 
   .experiment-layout {
-    height: auto !important;
-    min-height: 100% !important;
-    overflow-y: visible !important;
+    grid-template-columns: minmax(220px, 38%) minmax(0, 62%);
+    height: 100dvh !important;
+    min-height: 0 !important;
   }
 
   .experiment-panel {
-    min-height: 480px !important; /* Gives MD canvas and controls enough vertical runway */
+    height: 100% !important;
+    min-height: 0 !important;
   }
 }
 
