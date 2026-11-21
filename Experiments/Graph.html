@@ -57,9 +57,9 @@
       context.font = 'bold 12px Helvetica, Arial, sans-serif';
       context.fillText(graphInfo.subtitle, width / 2, 41);
 
-      // X-axis label placed directly under the plot
+      // X-axis label centered under the tick numbers
       context.font = '12px Helvetica, Arial, sans-serif';
-      context.fillText(graphInfo.x, width - 22, bottom + 18);
+      context.fillText(graphInfo.x, left + plotWidth / 2, bottom + 36);
 
       // Y-axis label centered exactly on the Y-axis
       context.save();
