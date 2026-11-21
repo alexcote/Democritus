@@ -48,22 +48,14 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* Landscape: tighter vertical spacing for a larger card + no size jump when Description hides */
+    /* Landscape: tighter vertical spacing for a larger card */
     body.is-landscape {
       padding: 4px 0;
       overflow-y: hidden;
     }
 
     body.is-landscape .description-wrap {
-      display: block;
-      visibility: hidden;
-      pointer-events: none;
       margin: 4px 0 0;
-    }
-
-    body.is-landscape.show-desc .description-wrap {
-      visibility: visible;
-      pointer-events: auto;
     }
 
     /* Scaling anchor: explicitly centered with margin auto */
@@ -201,15 +193,30 @@
       cursor: not-allowed;
     }
 
+    /* Desktop & Landscape: reserve space so hiding Description never resizes the card */
     .description-wrap {
-      display: none;
+      display: block;
+      visibility: hidden;
+      pointer-events: none;
       margin-top: 10px;
-      margin-bottom: 8px; 
+      margin-bottom: 8px;
       text-align: center;
     }
-    
+
     .show-desc .description-wrap {
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    /* Portrait: collapse space cleanly when stacked above the lesson panel */
+    body.is-portrait .description-wrap {
+      display: none;
+    }
+
+    body.is-portrait.show-desc .description-wrap {
       display: block;
+      visibility: visible;
+      pointer-events: auto;
     }
     
     .desc-link {
@@ -304,6 +311,8 @@
       const isLandscape = !isDevicePortrait && viewHeight < 600;
 
       document.body.classList.toggle('is-landscape', isLandscape);
+      document.body.classList.toggle('is-portrait', isDevicePortrait);
+      document.body.classList.toggle('is-landscape', isLandscape);
 
       // Measure unscaled height (includes title, canvas, controls, and Description if visible)
       const naturalHeight = scaler.scrollHeight || 590;
@@ -311,7 +320,7 @@
       const availWidth = Math.max(120, viewWidth - 12);
       const availHeight = isLandscape
         ? Math.max(120, viewHeight - 10) // Matches 8px landscape body padding + 2px buffer
-        : viewHeight - 68;
+        : viewHeight - 28;
 
       const scaleX = availWidth / 380;
       const scaleY = availHeight / naturalHeight;
