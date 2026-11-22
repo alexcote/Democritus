@@ -295,14 +295,15 @@
          .feature-grid { column-gap: 8px; }
          .feature-caption { font-size: 1.15rem; }
       }
-      /* Mobile landscape: proportional desktop scaling, sized up for readability */
+
+      /* Mobile landscape: proportional desktop scaling using JS-synced viewport units */
       @media screen and (orientation: landscape) and (max-height: 600px) {
          body {
             padding: 0 12px;
          }
 
          .page {
-            min-height: 100dvh;
+            min-height: calc(var(--app-vh, 1vh) * 100);
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -316,9 +317,12 @@
          .feature-grid {
             width: 100%;
             max-width: 100%;
-            grid-template-columns: clamp(95px, min(42dvh, 21vw), 190px) auto clamp(95px, min(42dvh, 21vw), 190px);
+            grid-template-columns:
+               clamp(95px, min(calc(var(--app-vh, 1vh) * 42), calc(var(--app-vw, 1vw) * 21)), 190px)
+               auto
+               clamp(95px, min(calc(var(--app-vh, 1vh) * 42), calc(var(--app-vw, 1vw) * 21)), 190px);
             justify-content: center;
-            gap: 8px clamp(12px, min(16dvh, 4.5vw), 56px);
+            gap: 8px clamp(12px, min(calc(var(--app-vh, 1vh) * 16), calc(var(--app-vw, 1vw) * 4.5)), 56px);
             margin: 0 auto;
          }
 
@@ -332,17 +336,17 @@
 
          .tagline {
             white-space: nowrap;
-            font-size: clamp(15px, min(5.8dvh, 3vw), 23px);
-            margin-bottom: clamp(4px, 1.8dvh, 10px);
+            font-size: clamp(15px, min(calc(var(--app-vh, 1vh) * 5.8), calc(var(--app-vw, 1vw) * 3)), 23px);
+            margin-bottom: clamp(4px, calc(var(--app-vh, 1vh) * 1.8), 10px);
          }
 
          .greek-band {
-            width: min(100%, clamp(200px, 72dvh, 320px));
-            margin-bottom: clamp(6px, 2.2dvh, 12px);
+            width: min(100%, clamp(200px, calc(var(--app-vh, 1vh) * 72), 320px));
+            margin-bottom: clamp(6px, calc(var(--app-vh, 1vh) * 2.2), 12px);
          }
 
          .authors {
-            font-size: clamp(14px, 4.4dvh, 18px);
+            font-size: clamp(14px, calc(var(--app-vh, 1vh) * 4.4), 18px);
             line-height: 1.4;
          }
 
@@ -355,8 +359,8 @@
          }
 
          .feature-caption {
-            font-size: clamp(18px, 6.2dvh, 25px);
-            margin-top: clamp(4px, 2dvh, 12px);
+            font-size: clamp(18px, calc(var(--app-vh, 1vh) * 6.2), 25px);
+            margin-top: clamp(4px, calc(var(--app-vh, 1vh) * 2), 12px);
          }
 
          .bottom-nav {
@@ -365,14 +369,14 @@
          }
 
          .bottom-nav img {
-            height: clamp(26px, 7.5dvh, 32px);
+            height: clamp(26px, calc(var(--app-vh, 1vh) * 7.5), 32px);
          }
 
          .heritage-credit {
             width: 100%;
             margin: 0;
             padding-top: 4px;
-            font-size: clamp(13px, 2.8dvh, 15px);
+            font-size: clamp(13px, calc(var(--app-vh, 1vh) * 2.8), 15px);
          }
       }
    </style>
@@ -416,6 +420,34 @@
         Originally developed at Daresbury Laboratory (2000) &bull; Re-engineered in HTML5 (2026)
       </footer>
    </main>
+   <script>
+      function syncViewportUnits() {
+         const vv = window.visualViewport;
+         const w = vv ? vv.width : window.innerWidth;
+         const h = vv ? vv.height : window.innerHeight;
+         document.documentElement.style.setProperty('--app-vw', `${w / 100}px`);
+         document.documentElement.style.setProperty('--app-vh', `${h / 100}px`);
+      }
+
+      syncViewportUnits();
+      window.addEventListener('resize', syncViewportUnits);
+      window.addEventListener('orientationchange', () => {
+         syncViewportUnits();
+         setTimeout(syncViewportUnits, 150);
+      });
+      window.addEventListener('load', () => {
+         syncViewportUnits();
+         setTimeout(syncViewportUnits, 150);
+         setTimeout(syncViewportUnits, 400);
+      });
+      window.addEventListener('pageshow', () => {
+         syncViewportUnits();
+         setTimeout(syncViewportUnits, 150);
+      });
+      if (window.visualViewport) {
+         window.visualViewport.addEventListener('resize', syncViewportUnits);
+      }
+   </script>
 </body>
 <!-- Copyright Daresbury Laboratory 2000. Reproduction by permission only. -->
 </html>
