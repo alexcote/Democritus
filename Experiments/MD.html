@@ -294,11 +294,31 @@
       document.body.classList.add('show-desc');
     }
 
-    window.addEventListener('resize', updateAppletScale);
-    window.addEventListener('load', () => requestAnimationFrame(updateAppletScale));
-    window.addEventListener('pageshow', () => requestAnimationFrame(updateAppletScale));
-    requestAnimationFrame(updateAppletScale);
-    updateAppletScale();
+    function scheduleScale() {
+      requestAnimationFrame(updateAppletScale);
+    }
+
+    window.addEventListener('resize', scheduleScale);
+    window.addEventListener('load', () => {
+      scheduleScale();
+      setTimeout(updateAppletScale, 150);
+      setTimeout(updateAppletScale, 400);
+    });
+    window.addEventListener('pageshow', () => {
+      scheduleScale();
+      setTimeout(updateAppletScale, 150);
+    });
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scheduleScale);
+    }
+    try {
+      if (window.top && window.top.visualViewport) {
+        window.top.visualViewport.addEventListener('resize', scheduleScale);
+      }
+    } catch (e) {}
+
+    scheduleScale();
 
     function updateAppletScale() {
       // 1. Determine device orientation from the top window (never the iframe's own aspect ratio)
@@ -309,8 +329,8 @@
         isDevicePortrait = window.screen ? window.screen.height > window.screen.width : false;
       }
 
-      const viewWidth = document.documentElement.clientWidth || window.innerWidth;
-      const viewHeight = document.documentElement.clientHeight || window.innerHeight;
+      const viewWidth = window.innerWidth || document.documentElement.clientWidth;
+      const viewHeight = window.innerHeight || document.documentElement.clientHeight;
       const isLandscape = !isDevicePortrait && viewHeight < 600;
 
       document.body.classList.toggle('is-portrait', isDevicePortrait);
