@@ -321,17 +321,34 @@
     scheduleScale();
 
     function updateAppletScale() {
-      // 1. Determine device orientation from the top window (never the iframe's own aspect ratio)
-      let isDevicePortrait = false;
+      // 1. Read real device dimensions from window.top.visualViewport
+      let topW = window.innerWidth;
+      let topH = window.innerHeight;
       try {
-        isDevicePortrait = window.top.innerHeight > window.top.innerWidth;
+        const topWin = window.top;
+        const vv = topWin.visualViewport;
+        topW = (vv && vv.width > 0) ? vv.width : topWin.innerWidth;
+        topH = (vv && vv.height > 0) ? vv.height : topWin.innerHeight;
       } catch (e) {
-        isDevicePortrait = window.screen ? window.screen.height > window.screen.width : false;
+        if (window.screen) {
+          topW = window.screen.width;
+          topH = window.screen.height;
+        }
       }
 
-      const viewWidth = window.innerWidth || document.documentElement.clientWidth;
-      const viewHeight = window.innerHeight || document.documentElement.clientHeight;
-      const isLandscape = !isDevicePortrait && viewHeight < 600;
+      const isDevicePortrait = topH > topW;
+      const isLandscape = !isDevicePortrait && topH <= 600;
+
+      const vvSelf = window.visualViewport;
+      const viewWidth = (vvSelf && vvSelf.width > 0)
+        ? vvSelf.width
+        : (window.innerWidth || document.documentElement.clientWidth);
+      const rawHeight = (vvSelf && vvSelf.height > 0)
+        ? vvSelf.height
+        : (window.innerHeight || document.documentElement.clientHeight);
+
+      // Never let a stale iframe height exceed the real landscape viewport height
+      const viewHeight = isLandscape ? Math.min(rawHeight, topH) : rawHeight;
 
       document.body.classList.toggle('is-portrait', isDevicePortrait);
       document.body.classList.toggle('is-landscape', isLandscape);

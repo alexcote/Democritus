@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
    <meta charset="UTF-8" />
-   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
    <title>Democritus</title>
    <style>
       @font-face {
@@ -24,10 +24,18 @@
       * { box-sizing: border-box; }
 
       html, body { min-height: 100%; }
+	  
+	  html {
+         -webkit-text-size-adjust: 100%;
+         text-size-adjust: 100%;
+         overflow-x: hidden;
+      }
 
       body {
          margin: 0;
          padding: 24px;
+		 max-width: 100%;
+         overflow-x: hidden;
          color: var(--ink);
          background: url("../Textures/iepback.gif") repeat;
          font-family: var(--serif-stack);
@@ -217,85 +225,87 @@
          .feature-grid { column-gap: 8px; }
          .feature-caption { font-size: 1.15rem; }
       }
-	  /* Mobile landscape: proportional desktop scaling, sized up for readability */
-      @media screen and (orientation: landscape) and (max-height: 600px) {
-         body {
-            padding: 0 12px;
-         }
+	  
+      /* Mobile landscape: JS-driven class to bypass a Chrome PWA media-query reload bug */
+      html.mobile-landscape body {
+         padding: 0 12px;
+      }
 
-         .page {
-            min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            padding: 10px 10px 16px;
-         }
+      html.mobile-landscape .page {
+         min-height: calc(var(--app-vh, 1vh) * 100);
+         display: flex;
+         flex-direction: column;
+         justify-content: flex-start;
+         padding: 10px 10px 16px;
+      }
 
-         .masthead {
-            padding-bottom: 14px;
-         }
+      html.mobile-landscape .masthead {
+         padding-bottom: 14px;
+      }
 
-         .feature-grid {
-            width: 100%;
-            max-width: 100%;
-            grid-template-columns: clamp(95px, min(42dvh, 21vw), 190px) auto clamp(95px, min(42dvh, 21vw), 190px);
-            justify-content: center;
-            gap: 8px clamp(12px, min(16dvh, 4.5vw), 56px);
-            margin: 0 auto;
-         }
+      html.mobile-landscape .feature-grid {
+         width: 100%;
+         max-width: 100%;
+         grid-template-columns:
+            clamp(95px, min(calc(var(--app-vh, 1vh) * 42), calc(var(--app-vw, 1vw) * 21)), 190px)
+            auto
+            clamp(95px, min(calc(var(--app-vh, 1vh) * 42), calc(var(--app-vw, 1vw) * 21)), 190px);
+         justify-content: center;
+         gap: 8px clamp(12px, min(calc(var(--app-vh, 1vh) * 16), calc(var(--app-vw, 1vw) * 4.5)), 56px);
+         margin: 0 auto;
+      }
 
-         .portrait { grid-column: 1; grid-row: 1; }
-         .feature-copy { grid-column: 2; grid-row: 1; }
-         .atom { grid-column: 3; grid-row: 1; }
+      html.mobile-landscape .portrait { grid-column: 1; grid-row: 1; }
+      html.mobile-landscape .feature-copy { grid-column: 2; grid-row: 1; }
+      html.mobile-landscape .atom { grid-column: 3; grid-row: 1; }
 
-         .feature-image-link {
-            width: 100%;
-         }
+      html.mobile-landscape .feature-image-link {
+         width: 100%;
+      }
 
-         .tagline {
-            white-space: nowrap;
-            font-size: clamp(0.92rem, min(5.8dvh, 3vw), 1.45rem);
-            margin-bottom: clamp(4px, 1.8dvh, 10px);
-         }
+      html.mobile-landscape .tagline {
+         white-space: nowrap;
+         font-size: clamp(15px, min(calc(var(--app-vh, 1vh) * 5.8), calc(var(--app-vw, 1vw) * 3)), 23px);
+         margin-bottom: clamp(4px, calc(var(--app-vh, 1vh) * 1.8), 10px);
+      }
 
-         .greek-band {
-            width: min(100%, clamp(200px, 72dvh, 320px));
-            margin-bottom: clamp(6px, 2.2dvh, 12px);
-         }
+      html.mobile-landscape .greek-band {
+         width: min(100%, clamp(200px, calc(var(--app-vh, 1vh) * 72), 320px));
+         margin-bottom: clamp(6px, calc(var(--app-vh, 1vh) * 2.2), 12px);
+      }
 
-         .authors {
-            font-size: clamp(0.88rem, 4.4dvh, 1.15rem);
-            line-height: 1.4;
-         }
+      html.mobile-landscape .authors {
+         font-size: clamp(14px, calc(var(--app-vh, 1vh) * 4.4), 18px);
+         line-height: 1.4;
+      }
 
-         .authors p {
-            margin: 2px 0;
-         }
+      html.mobile-landscape .authors p {
+         margin: 2px 0;
+      }
 
-         .authors .byline {
-            margin: 16px 0;
-         }
+      html.mobile-landscape .authors .byline {
+         margin: 16px 0;
+      }
 
-         .feature-caption {
-            font-size: clamp(1.15rem, 6.2dvh, 1.6rem);
-            margin-top: clamp(4px, 2dvh, 12px);
-         }
+      html.mobile-landscape .feature-caption {
+         font-size: clamp(18px, calc(var(--app-vh, 1vh) * 6.2), 25px);
+         margin-top: clamp(4px, calc(var(--app-vh, 1vh) * 2), 12px);
+      }
 
-         .bottom-nav {
-            margin: auto auto 18px;
-            padding-top: 8px;
-         }
+      html.mobile-landscape .bottom-nav {
+         margin: auto auto 18px;
+         padding-top: 8px;
+      }
 
-         .bottom-nav img {
-            height: clamp(26px, 7.5dvh, 32px);
-         }
+      html.mobile-landscape .bottom-nav img {
+         height: clamp(26px, calc(var(--app-vh, 1vh) * 7.5), 32px);
+      }
 
-         .heritage-credit {
-            width: 100%;
-            margin: 0;
-            padding-top: 4px;
-            font-size: clamp(0.85rem, 2.8dvh, 0.92rem);
-         }
+      html.mobile-landscape .heritage-credit {
+         width: 100%;
+         margin: 0;
+         padding-top: 4px;
+         font-size: clamp(13px, calc(var(--app-vh, 1vh) * 2.8), 15px);
       }
    </style>
 </head>
@@ -338,6 +348,42 @@
         Originally developed at Daresbury Laboratory (2000) &bull; Re-engineered in HTML5 (2026)
       </footer>
    </main>
+   <script>
+      function syncViewportUnits() {
+         const vv = window.visualViewport;
+         const w = vv ? Math.min(window.innerWidth, vv.width) : window.innerWidth;
+         const h = vv ? Math.min(window.innerHeight, vv.height) : window.innerHeight;
+         const isMobileLandscape = w > h && h <= 600;
+
+         document.documentElement.classList.toggle('mobile-landscape', isMobileLandscape);
+         document.documentElement.style.setProperty('--app-vw', `${w / 100}px`);
+         document.documentElement.style.setProperty('--app-vh', `${h / 100}px`);
+      }
+
+      syncViewportUnits();
+      window.addEventListener('resize', syncViewportUnits);
+      window.addEventListener('orientationchange', () => {
+         syncViewportUnits();
+         setTimeout(syncViewportUnits, 150);
+         setTimeout(syncViewportUnits, 400);
+      });
+      window.addEventListener('load', () => {
+         syncViewportUnits();
+         setTimeout(syncViewportUnits, 150);
+         setTimeout(syncViewportUnits, 400);
+         setTimeout(syncViewportUnits, 800);
+      });
+      window.addEventListener('pageshow', () => {
+         syncViewportUnits();
+         setTimeout(syncViewportUnits, 150);
+      });
+      if (window.visualViewport) {
+         window.visualViewport.addEventListener('resize', syncViewportUnits);
+      }
+      if ('ResizeObserver' in window) {
+         new ResizeObserver(syncViewportUnits).observe(document.documentElement);
+      }
+   </script>
 </body>
 <!-- Copyright Daresbury Laboratory 2000. Reproduction by permission only. -->
 </html>

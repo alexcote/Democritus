@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <link rel="stylesheet" href="../responsive.css" />
   <title>Democritus: Experiments</title>
   <style>
@@ -97,8 +97,18 @@
     // Handle open/close overlay requests and message relays
     let lastSetHeight = 0;
 
+    const layoutEl = document.querySelector('.experiment-layout');
+
+    function getRealViewport() {
+      const vv = window.visualViewport;
+      const w = (vv && vv.width > 0) ? vv.width : window.innerWidth;
+      const h = (vv && vv.height > 0) ? vv.height : window.innerHeight;
+      return { w, h };
+    }
+
     function checkIsPortrait() {
-      return window.matchMedia('(orientation: portrait)').matches || (window.innerHeight > window.innerWidth);
+      const { w, h } = getRealViewport();
+      return h > w;
     }
 
 
@@ -145,21 +155,57 @@
     }
 
     function handleLayoutChange() {
-      if (!checkIsPortrait()) {
+      const { w, h } = getRealViewport();
+      const isPortrait = h > w;
+      const isMobileLandscape = !isPortrait && h <= 600;
+
+      if (isMobileLandscape) {
+        // Lock shell and layout to the true visual landscape height
+        document.documentElement.style.height = `${h}px`;
+        document.body.style.height = `${h}px`;
+        if (layoutEl) layoutEl.style.height = `${h}px`;
         if (mdFrame.style.height !== '') {
           mdFrame.style.height = '';
           lastSetHeight = 0;
         }
       } else {
-        lastSetHeight = 0;
+        document.documentElement.style.height = '';
+        document.body.style.height = '';
+        if (layoutEl) layoutEl.style.height = '';
+        if (!isPortrait && mdFrame.style.height !== '') {
+          mdFrame.style.height = '';
+          lastSetHeight = 0;
+        } else if (isPortrait) {
+          lastSetHeight = 0;
+        }
       }
+
       requestAnimationFrame(triggerMdResize);
     }
 
-    window.addEventListener('load', handleLayoutChange);
-    mdFrame.addEventListener('load', () => requestAnimationFrame(triggerMdResize));
+    handleLayoutChange();
+    window.addEventListener('load', () => {
+      handleLayoutChange();
+      setTimeout(handleLayoutChange, 150);
+      setTimeout(handleLayoutChange, 400);
+    });
+    window.addEventListener('pageshow', () => {
+      handleLayoutChange();
+      setTimeout(handleLayoutChange, 150);
+    });
+    mdFrame.addEventListener('load', () => {
+      handleLayoutChange();
+      setTimeout(triggerMdResize, 150);
+      setTimeout(triggerMdResize, 400);
+    });
     window.addEventListener('resize', handleLayoutChange);
-    window.addEventListener('orientationchange', handleLayoutChange);
+    window.addEventListener('orientationchange', () => {
+      handleLayoutChange();
+      setTimeout(handleLayoutChange, 150);
+    });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleLayoutChange);
+    }
 
     closeGraphBtn.addEventListener('click', () => {
       graphOverlay.classList.remove('active');

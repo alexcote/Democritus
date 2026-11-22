@@ -1,4 +1,4 @@
-const CACHE_NAME = 'democritus-v9';
+const CACHE_NAME = 'democritus-v10';
 
 const ASSETS_TO_CACHE = [
   './',
