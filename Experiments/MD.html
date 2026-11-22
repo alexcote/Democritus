@@ -327,8 +327,8 @@
       try {
         const topWin = window.top;
         const vv = topWin.visualViewport;
-        topW = (vv && vv.width > 0) ? vv.width : topWin.innerWidth;
-        topH = (vv && vv.height > 0) ? vv.height : topWin.innerHeight;
+        topW = (vv && vv.width > 0) ? Math.min(topWin.innerWidth, vv.width) : topWin.innerWidth;
+        topH = (vv && vv.height > 0) ? Math.min(topWin.innerHeight, vv.height) : topWin.innerHeight;
       } catch (e) {
         if (window.screen) {
           topW = window.screen.width;
@@ -341,14 +341,14 @@
 
       const vvSelf = window.visualViewport;
       const viewWidth = (vvSelf && vvSelf.width > 0)
-        ? vvSelf.width
+        ? Math.min(window.innerWidth, vvSelf.width)
         : (window.innerWidth || document.documentElement.clientWidth);
       const rawHeight = (vvSelf && vvSelf.height > 0)
-        ? vvSelf.height
+        ? Math.min(window.innerHeight, vvSelf.height)
         : (window.innerHeight || document.documentElement.clientHeight);
 
-      // Never let a stale iframe height exceed the real landscape viewport height
-      const viewHeight = isLandscape ? Math.min(rawHeight, topH) : rawHeight;
+      // Cap iframe height against the real top viewport on both phones and tablets in landscape
+      const viewHeight = !isDevicePortrait ? Math.min(rawHeight, topH) : rawHeight;
 
       document.body.classList.toggle('is-portrait', isDevicePortrait);
       document.body.classList.toggle('is-landscape', isLandscape);

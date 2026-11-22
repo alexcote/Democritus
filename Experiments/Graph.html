@@ -6,9 +6,9 @@
   <title>Graph Window</title>
   <style>
     * { box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; margin: 0; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
     body { background: #f4f4f4; color: #111; font: 12px Helvetica, Arial, sans-serif; }
-    canvas { display: block; width: 100%; height: 100%; }
+    canvas { display: block; }
   </style>
 </head>
 <body>
@@ -28,8 +28,36 @@
 
     function draw() {
       const ratio = window.devicePixelRatio || 1;
-      const width = canvas.clientWidth;
-      const height = canvas.clientHeight;
+      const vv = window.visualViewport;
+      const width = Math.max(10, Math.floor(
+        (vv && vv.width > 0) ? Math.min(window.innerWidth, vv.width) : window.innerWidth
+      ));
+      let height = Math.max(10, Math.floor(
+        (vv && vv.height > 0) ? Math.min(window.innerHeight, vv.height) : window.innerHeight
+      ));
+
+      // In landscape overlay mode, never let a stale iframe height draw past the screen bottom
+      try {
+        if (window.top && window.top !== window && window.frameElement) {
+          const topVv = window.top.visualViewport;
+          const topW = (topVv && topVv.width > 0)
+            ? Math.min(window.top.innerWidth, topVv.width)
+            : window.top.innerWidth;
+          const topH = (topVv && topVv.height > 0)
+            ? Math.min(window.top.innerHeight, topVv.height)
+            : window.top.innerHeight;
+          if (topW > topH) {
+            const frameTop = window.frameElement.getBoundingClientRect().top;
+            const maxVisibleHeight = Math.floor(topH - Math.max(0, frameTop));
+            if (maxVisibleHeight > 80) {
+              height = Math.min(height, maxVisibleHeight);
+            }
+          }
+        }
+      } catch (e) {}
+
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
       canvas.width = Math.round(width * ratio);
       canvas.height = Math.round(height * ratio);
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
@@ -142,10 +170,44 @@
       graphChannel.onmessage = (event) => handleIncomingData(event.data);
     }
 
-    // Fallback message listener
-    window.addEventListener('message', (event) => handleIncomingData(event.data));
-    window.addEventListener('resize', draw);
-    draw();
+    function scheduleDraw() {
+      requestAnimationFrame(draw);
+    }
+
+    // Fallback message listener + parent resize trigger
+    window.addEventListener('message', (event) => {
+      if (event.data === 'trigger-resize') {
+        scheduleDraw();
+        return;
+      }
+      handleIncomingData(event.data);
+    });
+
+    window.addEventListener('resize', scheduleDraw);
+    window.addEventListener('load', () => {
+      scheduleDraw();
+      setTimeout(draw, 150);
+      setTimeout(draw, 400);
+    });
+    window.addEventListener('pageshow', () => {
+      scheduleDraw();
+      setTimeout(draw, 150);
+    });
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scheduleDraw);
+    }
+    try {
+      if (window.top && window.top.visualViewport) {
+        window.top.visualViewport.addEventListener('resize', scheduleDraw);
+      }
+    } catch (e) {}
+
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(scheduleDraw).observe(document.documentElement);
+    }
+
+    scheduleDraw();
   </script>
 </body>
 </html>

@@ -24,6 +24,7 @@
       z-index: 20;
       background: #f4f4f4;
       flex-direction: column;
+      overflow: hidden;
     }
 
     .graph-overlay.active {
@@ -58,6 +59,7 @@
     .graph-overlay-frame {
       width: 100%;
       flex: 1;
+      min-height: 0;
       border: 0;
     }
   </style>
@@ -101,8 +103,8 @@
 
     function getRealViewport() {
       const vv = window.visualViewport;
-      const w = (vv && vv.width > 0) ? vv.width : window.innerWidth;
-      const h = (vv && vv.height > 0) ? vv.height : window.innerHeight;
+      const w = (vv && vv.width > 0) ? Math.min(window.innerWidth, vv.width) : window.innerWidth;
+      const h = (vv && vv.height > 0) ? Math.min(window.innerHeight, vv.height) : window.innerHeight;
       return { w, h };
     }
 
@@ -134,8 +136,8 @@
       }
 
       if (data.action === 'open-graph-overlay') {
-        graphFrame.src = `Graph.html?type=${data.type}`;
         graphOverlay.classList.add('active');
+        graphFrame.src = `Graph.html?type=${data.type}`;
       } else if (data.type === 'rdf' || data.type === 'msd' || data.type === 'vac') {
         // Forward live graph calculations down into graphFrame
         if (graphFrame && graphFrame.contentWindow) {
@@ -154,13 +156,24 @@
       }
     }
 
+    function triggerGraphResize() {
+      if (graphOverlay.classList.contains('active') && graphFrame && graphFrame.contentWindow) {
+        graphFrame.contentWindow.postMessage('trigger-resize', '*');
+      }
+    }
+
+    graphFrame.addEventListener('load', () => {
+      requestAnimationFrame(triggerGraphResize);
+      setTimeout(triggerGraphResize, 150);
+      setTimeout(triggerGraphResize, 400);
+    });
+
     function handleLayoutChange() {
       const { w, h } = getRealViewport();
       const isPortrait = h > w;
-      const isMobileLandscape = !isPortrait && h <= 600;
 
-      if (isMobileLandscape) {
-        // Lock shell and layout to the true visual landscape height
+      if (!isPortrait) {
+        // Lock shell and layout to the true visual height on all landscape devices (phones & tablets)
         document.documentElement.style.height = `${h}px`;
         document.body.style.height = `${h}px`;
         if (layoutEl) layoutEl.style.height = `${h}px`;
@@ -172,15 +185,13 @@
         document.documentElement.style.height = '';
         document.body.style.height = '';
         if (layoutEl) layoutEl.style.height = '';
-        if (!isPortrait && mdFrame.style.height !== '') {
-          mdFrame.style.height = '';
-          lastSetHeight = 0;
-        } else if (isPortrait) {
-          lastSetHeight = 0;
-        }
+        lastSetHeight = 0;
       }
 
-      requestAnimationFrame(triggerMdResize);
+      requestAnimationFrame(() => {
+        triggerMdResize();
+        triggerGraphResize();
+      });
     }
 
     handleLayoutChange();
